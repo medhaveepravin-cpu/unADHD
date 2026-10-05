@@ -87,8 +87,12 @@
     background:var(--card);border:1px solid var(--stroke);box-shadow:0 4px 14px var(--shadow);
     font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:22px}
   .badge .dot{width:7px;height:7px;border-radius:50%;background:#34c759;box-shadow:0 0 0 3px rgba(52,199,89,.2)}
-  .hero img.mascot{width:150px;height:auto;filter:drop-shadow(0 16px 32px var(--shadow));animation:bob 5s ease-in-out infinite}
+  .hero img.mascot{width:220px;height:auto;filter:drop-shadow(0 18px 36px var(--shadow));animation:bob 5s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(-12px)}}
+  .mascot-name{display:inline-flex;align-items:center;gap:6px;margin-top:6px;padding:5px 14px;border-radius:999px;
+    background:var(--card);border:1px solid var(--stroke);box-shadow:0 4px 12px var(--shadow);
+    font-size:13px;font-weight:700;color:var(--ink-2);letter-spacing:.02em}
+  .mascot-name b{color:var(--accent-ink)}
   .hero h1{font-size:clamp(42px,8.5vw,76px);font-weight:800;letter-spacing:-.03em;line-height:1.02;margin-top:14px}
   .hero h1 .grad{background:linear-gradient(100deg,var(--accent),var(--accent-2),var(--accent));
     background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
@@ -119,7 +123,7 @@
   :root[data-theme="light"] .blob{opacity:.55}
 
   /* Real-UI hero scene */
-  .scene-wrap{position:relative;z-index:1;padding:42px 20px 6px;text-align:center}
+  .scene-wrap{position:relative;z-index:1;padding:64px 20px 24px;text-align:center}
   .scene{position:relative;max-width:860px;margin:0 auto}
   .browser{background:var(--card);border:1px solid var(--stroke);border-radius:16px;overflow:hidden;
     box-shadow:0 30px 70px var(--shadow-strong);text-align:left}
@@ -133,14 +137,14 @@
   .ln.h{height:20px;width:46%;background:color-mix(in srgb,var(--accent) 28%,var(--stroke))}
   .ln.w95{width:95%}.ln.w90{width:90%}.ln.w85{width:85%}.ln.w80{width:80%}.ln.w70{width:70%}
   .block{height:92px;border-radius:12px;background:var(--bg-soft);border:1px solid var(--stroke);margin:6px 0}
-  .realcard{position:absolute;right:-16px;bottom:-26px;width:min(470px,84%);height:auto;
+  .realcard{position:absolute;right:-10px;bottom:-14px;width:min(460px,82%);height:auto;
     filter:drop-shadow(0 26px 46px var(--shadow-strong));animation:cardfloat 6s ease-in-out infinite}
   @keyframes cardfloat{0%,100%{transform:rotate(-1.5deg) translateY(0)}50%{transform:rotate(-1.5deg) translateY(-10px)}}
-  .keycap{position:absolute;left:-12px;top:44px;background:var(--card);border:1px solid var(--stroke);
+  .keycap{position:absolute;left:22px;top:-22px;z-index:3;background:var(--card);border:1px solid var(--stroke);
     border-radius:12px;padding:10px 15px;box-shadow:0 12px 26px var(--shadow);font-weight:700;font-size:14px;color:var(--ink);
     animation:keyfloat 7s ease-in-out infinite}
   @keyframes keyfloat{50%{transform:translateY(-8px)}}
-  .caption{margin-top:44px;font-size:13.5px;color:var(--sub)}
+  .caption{margin-top:64px;font-size:13.5px;color:var(--sub)}
   @media(max-width:760px){
     .browser,.keycap{display:none}
     .realcard{position:static;width:100%;transform:none;animation:none;margin:0 auto;filter:drop-shadow(0 18px 34px var(--shadow))}
@@ -148,7 +152,7 @@
   }
 
   /* Marquee */
-  .marquee{margin-top:20px;position:relative;z-index:1;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+  .marquee{margin-top:92px;position:relative;z-index:1;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
   .marquee .track{display:flex;gap:12px;width:max-content;animation:scrollx 22s linear infinite}
   .chip{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;
     background:var(--card);border:1px solid var(--stroke);font-weight:600;font-size:14px;color:var(--ink-2);white-space:nowrap}
@@ -156,7 +160,9 @@
   @keyframes scrollx{to{transform:translateX(-50%)}}
 
   /* Sections */
-  section{padding:64px 0;position:relative}
+  section{padding:104px 0 76px;position:relative}
+  /* .wrap sets padding:0 20px which would wipe section vertical padding — restore it */
+  section.wrap{padding-top:104px;padding-bottom:76px}
   .eyebrow{text-align:center;font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent-ink)}
   h2{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.02em;text-align:center;margin-top:8px}
   .sub{text-align:center;color:var(--sub);margin:12px auto 0;max-width:620px;font-size:17px}
@@ -181,6 +187,10 @@
     border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:800;font-size:16px;margin-bottom:12px}
   .step h3{font-size:17px;margin-bottom:5px}
   .step p{font-size:15px;color:var(--sub)}
+
+  /* Peek-inside window shot */
+  .shot{max-width:470px;margin:44px auto 0}
+  .shot img{width:100%;height:auto;filter:drop-shadow(0 34px 64px var(--shadow-strong))}
 
   /* Privacy */
   .privacy{background:var(--bg-soft);border-top:1px solid var(--stroke);border-bottom:1px solid var(--stroke)}
@@ -241,7 +251,8 @@
   <div class="aurora"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
   <div class="inner wrap">
     <span class="badge"><span class="dot"></span> Free &amp; open source · 100% on-device</span>
-    <div><img class="mascot" src="mascot.png" alt="unADHD sprout mascot reading a book" /></div>
+    <div><img class="mascot" src="mascot.png" alt="Una, the unADHD sprout mascot, reading a book" /></div>
+    <div><span class="mascot-name">meet <b>Una</b>, your focus sprout</span></div>
     <h1>Hold <span class="grad">one intent.</span><br/>Finish it before you wander off.</h1>
     <p class="tag">A tiny macOS companion that keeps your current task in a floating card above every app — with one tap to jump back to it.</p>
     <div class="cta">
@@ -277,7 +288,7 @@
     <img class="realcard" src="shot-card.png" alt="The unADHD floating card showing the current intent 'Send the research email to Priya' with Finish and Done buttons, sitting on top of another app" />
     <span class="keycap">⌃⌥⇧U</span>
   </div>
-  <p class="caption">The real floating card — stays on top while you work in any app.</p>
+  <p class="caption">Una keeps your current intent on top while you work in any app.</p>
 </div>
 
 <div class="wrap marquee" aria-hidden="true">
@@ -314,6 +325,15 @@
     <div class="step reveal"><h3>Dump your intents</h3><p>Add what needs doing and where each one lives — an app or a link.</p></div>
     <div class="step reveal"><h3>Wander freely</h3><p>The card floats along with you, showing just the current one.</p></div>
     <div class="step reveal"><h3>Finish, then next</h3><p>One tap takes you back to it. Mark it done and the next appears.</p></div>
+  </div>
+</section>
+
+<section id="peek" class="wrap">
+  <p class="eyebrow reveal">A peek inside</p>
+  <h2 class="reveal">Your whole queue, one calm window</h2>
+  <p class="sub reveal">Dump every intent, pick where each one sends you, and work down the list. Una out front only ever shows the current one.</p>
+  <div class="shot reveal">
+    <img src="shot-window.png" alt="The unADHD main window: an add-intent box with app targets like Slack selected, and a queue of three intents with the current one marked NOW" />
   </div>
 </section>
 
@@ -356,7 +376,7 @@
 </section>
 
 <footer>
-  <p>Made with a little <span class="heart">🌱</span>. Source code under Apache-2.0 · mascot artwork © its author, all rights reserved.</p>
+  <p>Made with Una, the focus sprout. Source code under Apache-2.0 · mascot artwork © its author, all rights reserved.</p>
   <p style="margin-top:8px"><a href="https://github.com/medhaveepravin-cpu/unADHD">github.com/medhaveepravin-cpu/unADHD</a></p>
 </footer>
 
