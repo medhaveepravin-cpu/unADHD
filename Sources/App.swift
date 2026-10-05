@@ -8,9 +8,17 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     lazy var quickCapture = QuickCaptureController(store: store)
     lazy var nudgeEngine = NudgeEngine(store: store)
     private var cancellable: AnyCancellable?
+    private var activityToken: NSObjectProtocol?
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         NSApp.setActivationPolicy(.regular)
+
+        // Prevent App Nap from throttling our background timer, or drift nudges
+        // arrive minutes late while you're working in another app.
+        activityToken = ProcessInfo.processInfo.beginActivity(
+            options: [.userInitiatedAllowingIdleSystemSleep],
+            reason: "Timely intent drift nudges")
+
         FrontmostTracker.shared.start()   // begin remembering where you came from
 
         cancellable = store.$showFloatingCard
