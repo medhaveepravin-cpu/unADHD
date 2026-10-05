@@ -268,7 +268,7 @@
     <p class="req">macOS 13+ · Apple Silicon · no account, no tracking</p>
     <div class="firstrun">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-      <span>First launch: macOS warns it's unidentified — just <strong>right-click → Open</strong>. <a href="#download">Why?</a></span>
+      <span>First launch: macOS warns it's unidentified — one Terminal command clears it. <a href="#download">How &amp; why</a></span>
     </div>
   </div>
 </section>
@@ -363,12 +363,14 @@
       </a>
       <div class="note">
         <div class="hd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> First launch (one time)</div>
-        unADHD isn't notarized yet, so macOS will warn that it's from an unidentified developer. That's expected — here's the 10-second fix:
+        unADHD isn't notarized yet, so macOS will warn that it's from an unidentified developer and may say it "cannot verify it's free of malware." That's expected for an unsigned open-source app — here's the fix:
         <ol>
           <li>Unzip <code>unADHD.zip</code> and move <strong>unADHD.app</strong> to your Applications folder.</li>
-          <li><strong>Right-click</strong> the app → <strong>Open</strong> → <strong>Open</strong> in the dialog.</li>
-          <li>Still blocked? <strong>System Settings ▸ Privacy &amp; Security</strong> ▸ scroll down ▸ <strong>Open Anyway</strong>.</li>
+          <li>Open <strong>Terminal</strong> and run this — it clears the "downloaded from the internet" flag on just this app, then double-click to open:
+            <br><code>xattr -dr com.apple.quarantine /Applications/unADHD.app</code></li>
+          <li>Prefer no Terminal? Double-click the app, dismiss the warning, then go to <strong>System Settings ▸ Privacy &amp; Security</strong> ▸ scroll down ▸ <strong>Open Anyway</strong>.</li>
         </ol>
+        <p style="margin:10px 0 0;font-size:.92em;opacity:.8">Only run that command on apps you downloaded from a source you trust (like this page). It doesn't disable any system protection — it just skips the check for this one file. On macOS 15+ the old right-click → Open shortcut no longer works.</p>
         Prefer to build it yourself? <a href="https://github.com/medhaveepravin-cpu/unADHD#build--run">Build from source</a> — it compiles with the Command Line Tools, no Xcode needed.
       </div>
     </div>
