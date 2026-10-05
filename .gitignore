@@ -1,0 +1,9 @@
+# Built app bundle (produced by build.sh)
+unADHD.app/
+
+# macOS
+.DS_Store
+
+# Editor/OS cruft
+*.swp
+*~

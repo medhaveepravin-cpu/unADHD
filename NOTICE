@@ -1,0 +1,23 @@
+unADHD
+Copyright 2026 Medhavee
+
+This product is licensed under the Apache License, Version 2.0 (see LICENSE).
+
+---
+
+ARTWORK — RIGHTS RESERVED (NOT covered by the Apache-2.0 license)
+
+The sprout mascot artwork, and the app icon derived from it, are included in
+this repository only so the app builds and looks as intended:
+
+  - Cute Sprout Journaling Mascot.png
+  - Resources/mascot.png
+  - Resources/menubar.png   (derived silhouette)
+  - Resources/AppIcon.icns  (derived icon)
+
+These image assets are © 2026 Medhavee, all rights reserved. They are NOT
+licensed under Apache-2.0 and may not be reused, redistributed, or adapted
+outside of building and running this project without the author's permission.
+
+The source code is Apache-2.0; the artwork is not. If you fork this project
+for your own distribution, please replace the mascot assets with your own.
