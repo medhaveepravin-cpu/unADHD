@@ -19,8 +19,15 @@ struct ContentView: View {
                 footerToggles
             }
             .padding(20)
+
+            if store.showOnboarding {
+                OnboardingView(store: store)
+                    .transition(.opacity)
+                    .zIndex(1)
+            }
         }
         .frame(width: 480, height: 680)
+        .animation(.easeInOut(duration: 0.25), value: store.showOnboarding)
     }
 
     // MARK: - Header
@@ -40,6 +47,14 @@ struct ContentView: View {
                     .foregroundStyle(Theme.accent)
             }
             Spacer()
+            Button { store.replayOnboarding() } label: {
+                Label("How it works", systemImage: "questionmark.circle")
+                    .font(.caption.weight(.semibold))
+                    .labelStyle(.titleAndIcon)
+            }
+            .buttonStyle(.plain)
+            .foregroundStyle(Theme.accent)
+            .help("Replay the quick tutorial")
         }
     }
 

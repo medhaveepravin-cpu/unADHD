@@ -49,6 +49,10 @@ final class IntentStore: ObservableObject {
     @Published var nudgeNotify: Bool = false  { didSet { save() } }
     @Published var pulseTick: Int = 0         // transient — drives the card pulse
 
+    // First-run tutorial. Shown until the user finishes/skips it once; replayable
+    // from the "How it works" button. Persisted separately so it survives relaunch.
+    @Published var showOnboarding: Bool = false
+
     // The single current focus.
     var current: Intent? { intents.first(where: { !$0.done }) }
     var remainingCount: Int { intents.filter { !$0.done }.count }
@@ -135,6 +139,15 @@ final class IntentStore: ObservableObject {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert]) { _, _ in }
     }
 
+    // MARK: - Onboarding
+
+    func replayOnboarding() { showOnboarding = true }
+
+    func finishOnboarding() {
+        showOnboarding = false
+        d.set(true, forKey: K.onboarded)
+    }
+
     // Snooze: hide the card and bring it back after an interval (M4).
     private var snoozeTimer: Timer?
     func snooze(_ seconds: TimeInterval) {
@@ -176,6 +189,7 @@ final class IntentStore: ObservableObject {
         static let intents = "intents.v2", presets = "presets.v1"
         static let auto = "autoCapture", card = "showFloatingCard"
         static let nudge = "nudgesEnabled", notify = "nudgeNotify"
+        static let onboarded = "hasOnboarded.v1"
     }
 
     init() { load() }
@@ -195,6 +209,8 @@ final class IntentStore: ObservableObject {
         if d.object(forKey: K.card) != nil { showFloatingCard = d.bool(forKey: K.card) }
         if d.object(forKey: K.nudge)  != nil { nudgesEnabled = d.bool(forKey: K.nudge) }
         if d.object(forKey: K.notify) != nil { nudgeNotify = d.bool(forKey: K.notify) }
+        // Show the tutorial the first time the app ever runs.
+        showOnboarding = (d.object(forKey: K.onboarded) == nil)
         loading = false
     }
 

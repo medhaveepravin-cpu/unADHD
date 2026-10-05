@@ -36,6 +36,7 @@ cp "$DIR/Resources/AppIcon.icns" "$APP/Contents/Resources/AppIcon.icns"
 xcrun --sdk macosx swiftc -parse-as-library -O \
   -o "$APP/Contents/MacOS/unADHD" \
   "$DIR/Sources/Theme.swift" \
+  "$DIR/Sources/Onboarding.swift" \
   "$DIR/Sources/LoginItem.swift" \
   "$DIR/Sources/HotKeyManager.swift" \
   "$DIR/Sources/QuickCapture.swift" \
