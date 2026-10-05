@@ -1,42 +1,75 @@
 import SwiftUI
 
-// A first-run tutorial that explains the non-obvious parts of unADHD —
-// the queue, the floating card, the global capture hotkey, and nudges.
+// A first-run tutorial that walks through actually setting up an intent and
+// explains the non-obvious controls — the finish target, auto-capture, the
+// queue, the global hotkey, and the settings toggles.
 // Shown automatically on first launch, and replayable via "How it works".
 
 private struct Slide: Identifiable {
     let id = UUID()
-    let symbol: String?      // SF Symbol for the icon badge (nil = show the mascot)
+    let symbol: String?       // SF Symbol for the icon badge (nil = show the mascot)
     let title: String
-    let body: String
-    let showsHotkey: Bool    // render the ⌃⌥⇧U keycaps under the body
+    let intro: String         // one short line of context (may be "")
+    let steps: [String]       // terse, action-first lines (markdown bold allowed)
+    let numbered: Bool        // numbered steps (a sequence) vs. bulleted (a list)
+    let showsHotkey: Bool     // render the ⌃⌥⇧U keycaps under the intro
+
+    init(symbol: String?, title: String, intro: String = "",
+         steps: [String] = [], numbered: Bool = false, showsHotkey: Bool = false) {
+        self.symbol = symbol; self.title = title; self.intro = intro
+        self.steps = steps; self.numbered = numbered; self.showsHotkey = showsHotkey
+    }
 }
 
 private let slides: [Slide] = [
     Slide(symbol: nil,
           title: "Meet Una, your focus sprout",
-          body: "unADHD holds one intent at a time, so you can empty your head onto the list and still finish what actually matters.",
-          showsHotkey: false),
-    Slide(symbol: "tray.full.fill",
-          title: "Dump everything into the queue",
-          body: "Type anything into “Add an intent.” It all lands in your queue — but Una surfaces only the first one, so you're never staring at a wall of tasks.",
-          showsHotkey: false),
-    Slide(symbol: "macwindow.on.rectangle",
-          title: "One intent, always in view",
-          body: "A small floating card hovers above every app showing your current intent. Toggle it anytime with “Show floating card.”",
-          showsHotkey: false),
+          intro: "Hold one intent at a time. Here's the 30-second tour."),
+
+    Slide(symbol: "plus.circle.fill",
+          title: "Add an intent",
+          steps: [
+            "Type the task in **What needs doing?**",
+            "Under **When I finish, take me to**, pick where you'll land.",
+            "Press **+** — it drops into your queue.",
+          ],
+          numbered: true),
+
     Slide(symbol: "arrow.up.forward.app.fill",
-          title: "Finish takes you back",
-          body: "Give each intent a target app — Mail, Chrome, anything. Hit Finish and unADHD jumps you straight back to where the work happens.",
-          showsHotkey: false),
+          title: "Where “Finish” sends you",
+          intro: "Each intent has a target app, so finishing drops you back into the work:",
+          steps: [
+            "Tap a **chip** for a common app (Mail, Chrome…).",
+            "**Browse app…** picks any installed app.",
+            "**Other** takes an app name or a URL.",
+            "Right-click a chip to remove it.",
+          ]),
+
+    Slide(symbol: "wand.and.stars",
+          title: "Auto-capture the app I came from",
+          intro: "Leave this on and the target sets itself:",
+          steps: [
+            "Switch to an app, come back — it becomes your **take me to**.",
+            "Turn it off to choose the target by hand.",
+          ]),
+
+    Slide(symbol: "checklist",
+          title: "Your queue",
+          steps: [
+            "The top item is your focus — the one on the floating card.",
+            "Tap **Finish** to jump to its app; check it off when done.",
+            "**✕** removes an item; drag to reorder.",
+          ]),
+
     Slide(symbol: "bolt.fill",
-          title: "Capture from anywhere",
-          body: "Press this shortcut in any app to jot a new intent without losing your place. It even remembers the app you were in and aims you back there.",
+          title: "Work from anywhere",
+          intro: "One shortcut captures an intent without leaving your app:",
+          steps: [
+            "It targets the app you're in and returns you there.",
+            "Flip **Show floating card**, **nudges**, and **Launch at login** below.",
+            "Una always waits in your **menu bar** 🌱",
+          ],
           showsHotkey: true),
-    Slide(symbol: "bell.badge.fill",
-          title: "A nudge when you drift",
-          body: "Wander off task and Una gives a gentle nudge to pull you back. Turn nudges and notifications on below. Una always lives in your menu bar 🌱",
-          showsHotkey: false),
 ]
 
 struct OnboardingView: View {
@@ -48,7 +81,6 @@ struct OnboardingView: View {
 
     var body: some View {
         ZStack {
-            // Dim + blur the app behind the tutorial.
             Color.black.opacity(0.28)
                 .ignoresSafeArea()
                 .transition(.opacity)
@@ -62,7 +94,6 @@ struct OnboardingView: View {
 
     private var card: some View {
         VStack(spacing: 0) {
-            // Skip, top-right.
             HStack {
                 Spacer()
                 Button("Skip") { finish() }
@@ -72,30 +103,39 @@ struct OnboardingView: View {
             }
             .padding([.top, .trailing], 14)
 
-            icon
-                .padding(.top, 4)
+            icon.padding(.top, 4)
 
             Text(slide.title)
                 .font(.system(size: 20, weight: .bold, design: .rounded))
                 .foregroundStyle(Theme.ink)
                 .multilineTextAlignment(.center)
-                .padding(.top, 16)
-                .padding(.horizontal, 28)
+                .padding(.top, 14)
+                .padding(.horizontal, 26)
                 .id("title\(page)")
                 .transition(.opacity)
 
-            Text(slide.body)
-                .font(.callout)
-                .foregroundStyle(Theme.subtle)
-                .multilineTextAlignment(.center)
-                .fixedSize(horizontal: false, vertical: true)
-                .padding(.top, 8)
-                .padding(.horizontal, 28)
-                .id("body\(page)")
-                .transition(.opacity)
+            if !slide.intro.isEmpty {
+                Text(slide.intro)
+                    .font(.callout)
+                    .foregroundStyle(Theme.subtle)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 8)
+                    .padding(.horizontal, 26)
+                    .id("intro\(page)")
+                    .transition(.opacity)
+            }
 
             if slide.showsHotkey {
-                hotkey.padding(.top, 16)
+                hotkey.padding(.top, 14)
+            }
+
+            if !slide.steps.isEmpty {
+                steps
+                    .padding(.top, 14)
+                    .padding(.horizontal, 26)
+                    .id("steps\(page)")
+                    .transition(.opacity)
             }
 
             dots.padding(.top, 22)
@@ -118,16 +158,48 @@ struct OnboardingView: View {
     @ViewBuilder private var icon: some View {
         if let symbol = slide.symbol {
             Image(systemName: symbol)
-                .font(.system(size: 30, weight: .semibold))
+                .font(.system(size: 28, weight: .semibold))
                 .foregroundStyle(Theme.accent)
-                .frame(width: 76, height: 76)
+                .frame(width: 70, height: 70)
                 .background(Circle().fill(Theme.accent.opacity(0.10)))
                 .id("icon\(page)")
                 .transition(.scale.combined(with: .opacity))
         } else {
-            MascotView(size: 92)
+            MascotView(size: 88)
                 .id("icon\(page)")
                 .transition(.scale.combined(with: .opacity))
+        }
+    }
+
+    private var steps: some View {
+        VStack(alignment: .leading, spacing: 11) {
+            ForEach(Array(slide.steps.enumerated()), id: \.offset) { i, step in
+                HStack(alignment: .top, spacing: 11) {
+                    marker(i)
+                    Text(.init(step))        // .init parses markdown (bold labels)
+                        .font(.callout)
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    @ViewBuilder private func marker(_ i: Int) -> some View {
+        if slide.numbered {
+            Text("\(i + 1)")
+                .font(.system(size: 12, weight: .bold, design: .rounded))
+                .foregroundStyle(.white)
+                .frame(width: 22, height: 22)
+                .background(Circle().fill(Theme.accentMuted))
+        } else {
+            Image(systemName: "checkmark")
+                .font(.system(size: 10, weight: .bold))
+                .foregroundStyle(Theme.accent)
+                .frame(width: 22, height: 22)
+                .background(Circle().fill(Theme.accent.opacity(0.10)))
         }
     }
 
