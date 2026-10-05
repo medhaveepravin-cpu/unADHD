@@ -4,202 +4,356 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>unADHD — hold one intent, finish it</title>
-<meta name="description" content="A tiny macOS companion that keeps one current intent in a floating card above every app — so you finish it before you wander off. Free and open source." />
+<meta name="description" content="A tiny macOS companion that keeps one current intent in a floating card above every app — so you finish it before you wander off. Free, open source, 100% on-device." />
 <link rel="icon" href="icon.png" />
 <meta property="og:title" content="unADHD" />
 <meta property="og:description" content="Hold one intent. Finish it in a tap. A tiny on-device macOS focus companion." />
 <meta property="og:image" content="icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script>document.documentElement.classList.add('js');</script>
 <style>
   :root {
-    --bg: #ffffff;
-    --bg-soft: #f4f2fa;
-    --card: #fbfaff;
-    --card-2: #efe9fb;
-    --stroke: #e7dff4;
-    --ink: #2f2548;
-    --sub: #7b6ea6;
-    --accent: #7c5cd8;
-    --accent-muted: #9385d6;
-    --shadow: rgba(124, 92, 216, 0.18);
+    --bg:#ffffff; --bg-soft:#f6f4fc; --card:#ffffff; --card-2:#f3effc;
+    --stroke:#e9e3f6; --ink:#241c3b; --ink-2:#4a4068; --sub:#6c5f93;
+    --accent:#7c5cd8; --accent-2:#9b7ff0; --accent-ink:#5a3fc0;
+    --shadow:rgba(124,92,216,.16); --shadow-strong:rgba(124,92,216,.26);
+    --radius:18px;
   }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #141221;
-      --bg-soft: #1b1830;
-      --card: #211d38;
-      --card-2: #2a2447;
-      --stroke: #35305a;
-      --ink: #efe9fb;
-      --sub: #a99cd6;
-      --accent: #a78bff;
-      --accent-muted: #8f78e6;
-      --shadow: rgba(0, 0, 0, 0.5);
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#111020; --bg-soft:#181530; --card:#1d1934; --card-2:#241f40;
+      --stroke:#342d57; --ink:#f1ecfb; --ink-2:#d2c9ee; --sub:#a99cd6;
+      --accent:#a78bff; --accent-2:#c3aaff; --accent-ink:#c3aaff;
+      --shadow:rgba(0,0,0,.5); --shadow-strong:rgba(0,0,0,.6);
     }
   }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    line-height: 1.55;
-    -webkit-font-smoothing: antialiased;
+  :root[data-theme="dark"]{
+    --bg:#111020; --bg-soft:#181530; --card:#1d1934; --card-2:#241f40;
+    --stroke:#342d57; --ink:#f1ecfb; --ink-2:#d2c9ee; --sub:#a99cd6;
+    --accent:#a78bff; --accent-2:#c3aaff; --accent-ink:#c3aaff;
+    --shadow:rgba(0,0,0,.5); --shadow-strong:rgba(0,0,0,.6);
   }
-  .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
-  a { color: var(--accent); }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{font-family:"Plus Jakarta Sans",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  a{color:var(--accent-ink);text-decoration:none}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 20px}
+  :focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:8px}
+
+  /* Buttons */
+  .btn{display:inline-flex;align-items:center;gap:9px;padding:14px 26px;border-radius:999px;
+    font-size:15.5px;font-weight:700;cursor:pointer;border:1px solid transparent;
+    transition:transform .18s ease,box-shadow .18s ease,background .18s ease}
+  .btn svg{width:18px;height:18px}
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;
+    box-shadow:0 12px 28px var(--shadow)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 18px 38px var(--shadow-strong)}
+  .btn-ghost{background:var(--card);color:var(--accent-ink);border-color:var(--stroke)}
+  .btn-ghost:hover{transform:translateY(-2px);background:var(--card-2)}
+
+  /* Nav */
+  header.nav{position:sticky;top:0;z-index:100;backdrop-filter:saturate(1.4) blur(14px);
+    background:color-mix(in srgb,var(--bg) 78%,transparent);border-bottom:1px solid transparent;
+    transition:border-color .25s ease,box-shadow .25s ease}
+  header.nav.scrolled{border-color:var(--stroke);box-shadow:0 6px 24px rgba(0,0,0,.05)}
+  .nav-in{display:flex;align-items:center;justify-content:space-between;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:19px;color:var(--ink)}
+  .brand img{width:34px;height:34px}
+  .nav-links{display:flex;align-items:center;gap:26px}
+  .nav-links a{color:var(--ink-2);font-weight:600;font-size:15px}
+  .nav-links a:hover{color:var(--accent-ink)}
+  .nav-cta{padding:9px 18px;font-size:14px}
+  @media(max-width:720px){.nav-links a:not(.nav-cta){display:none}}
+
+  /* Aurora background */
+  .aurora{position:absolute;inset:0;overflow:hidden;z-index:0;pointer-events:none}
+  .blob{position:absolute;border-radius:50%;filter:blur(70px);opacity:.55}
+  .blob.b1{width:520px;height:520px;background:#c9b7ff;top:-160px;left:-80px;animation:drift1 18s ease-in-out infinite}
+  .blob.b2{width:460px;height:460px;background:#a7d8ff;top:-120px;right:-100px;animation:drift2 22s ease-in-out infinite}
+  .blob.b3{width:420px;height:420px;background:#ffc7ec;top:120px;left:40%;animation:drift3 26s ease-in-out infinite}
+  @media(prefers-color-scheme:dark){.blob{opacity:.28}}
+  @keyframes drift1{50%{transform:translate(60px,40px) scale(1.1)}}
+  @keyframes drift2{50%{transform:translate(-50px,50px) scale(1.08)}}
+  @keyframes drift3{50%{transform:translate(30px,-40px) scale(1.12)}}
 
   /* Hero */
-  .hero {
-    text-align: center;
-    padding: 72px 16px 40px;
-    background: radial-gradient(1200px 500px at 50% -10%, var(--bg-soft), var(--bg));
-  }
-  .hero img.mascot { width: 160px; height: auto; filter: drop-shadow(0 12px 28px var(--shadow)); }
-  .hero h1 { font-size: clamp(38px, 8vw, 68px); font-weight: 800; letter-spacing: -0.02em; margin-top: 10px; }
-  .hero .tag { font-size: clamp(17px, 3.5vw, 22px); color: var(--sub); margin: 12px auto 0; max-width: 620px; }
-  .cta { margin-top: 30px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-  .btn {
-    display: inline-flex; align-items: center; gap: 9px;
-    padding: 14px 26px; border-radius: 999px; font-size: 16px; font-weight: 650;
-    text-decoration: none; border: 1px solid transparent; transition: transform .12s ease, box-shadow .12s ease;
-  }
-  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 10px 24px var(--shadow); }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px var(--shadow); }
-  .btn-ghost { background: transparent; color: var(--accent); border-color: var(--stroke); }
-  .btn-ghost:hover { background: var(--card-2); }
-  .req { margin-top: 16px; font-size: 13px; color: var(--sub); }
+  .hero{position:relative;text-align:center;padding:84px 20px 56px}
+  .hero .inner{position:relative;z-index:1}
+  .badge{display:inline-flex;align-items:center;gap:8px;padding:7px 15px;border-radius:999px;
+    background:var(--card);border:1px solid var(--stroke);box-shadow:0 4px 14px var(--shadow);
+    font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:22px}
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:#34c759;box-shadow:0 0 0 3px rgba(52,199,89,.2)}
+  .hero img.mascot{width:150px;height:auto;filter:drop-shadow(0 16px 32px var(--shadow));animation:bob 5s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(-12px)}}
+  .hero h1{font-size:clamp(42px,8.5vw,76px);font-weight:800;letter-spacing:-.03em;line-height:1.02;margin-top:14px}
+  .hero h1 .grad{background:linear-gradient(100deg,var(--accent),var(--accent-2),var(--accent));
+    background-size:200% auto;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 6s linear infinite}
+  @keyframes shine{to{background-position:200% center}}
+  .hero .tag{font-size:clamp(17px,3.4vw,22px);color:var(--sub);margin:18px auto 0;max-width:620px}
+  .cta{margin-top:30px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .req{margin-top:16px;font-size:13.5px;color:var(--sub)}
+  .firstrun{margin:14px auto 0;max-width:560px;display:inline-flex;align-items:center;gap:9px;
+    font-size:13px;color:var(--ink-2);background:var(--card-2);border:1px solid var(--stroke);
+    padding:9px 15px;border-radius:999px}
+  .firstrun svg{width:15px;height:15px;color:var(--accent-ink);flex:none}
+  .firstrun a{font-weight:700}
 
-  /* Floating-card mock */
-  .mock { display: flex; justify-content: center; padding: 20px 16px 10px; }
-  .fcard {
-    width: 360px; max-width: 100%;
-    background: linear-gradient(to bottom, var(--card), var(--card-2));
-    border: 1px solid var(--stroke); border-radius: 22px;
-    padding: 16px; display: flex; gap: 14px; align-items: flex-start;
-    box-shadow: 0 18px 44px var(--shadow);
-  }
-  .fcard .m { width: 84px; height: auto; flex: none; }
-  .fcard .label { font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--sub); }
-  .fcard .count { color: var(--accent); font-weight: 700; }
-  .fcard .title { font-size: 16px; font-weight: 650; margin: 8px 0 12px; }
-  .fcard .row { display: flex; gap: 8px; }
-  .pill { flex: 1; text-align: center; font-size: 13px; font-weight: 650; padding: 8px 0; border-radius: 999px; }
-  .pill.fill { background: var(--accent-muted); color: #fff; }
-  .pill.ghost { background: color-mix(in srgb, var(--accent) 8%, transparent); color: var(--accent); }
+  /* Floating card mock */
+  .mock{position:relative;z-index:1;display:flex;justify-content:center;padding:34px 20px 8px;perspective:1200px}
+  .fcard{width:380px;max-width:100%;background:color-mix(in srgb,var(--card) 88%,transparent);
+    backdrop-filter:blur(8px);border:1px solid var(--stroke);border-radius:24px;padding:18px;
+    display:flex;gap:16px;align-items:flex-start;box-shadow:0 28px 60px var(--shadow-strong);
+    animation:floaty 6s ease-in-out infinite}
+  @keyframes floaty{50%{transform:translateY(-10px) rotate(-.4deg)}}
+  .fcard .m{width:88px;height:auto;flex:none}
+  .fcard .label{font-size:11px;font-weight:800;letter-spacing:.07em;color:var(--sub)}
+  .fcard .count{color:var(--accent-ink)}
+  .fcard .title{font-size:16.5px;font-weight:700;margin:9px 0 13px;color:var(--ink);text-align:left}
+  .fcard .row{display:flex;gap:9px}
+  .pill{flex:1;text-align:center;font-size:13px;font-weight:700;padding:9px 0;border-radius:999px}
+  .pill.fill{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff}
+  .pill.ghost{background:color-mix(in srgb,var(--accent) 9%,transparent);color:var(--accent-ink)}
+  .keycap{position:absolute;right:calc(50% - 250px);top:48px;background:var(--card);border:1px solid var(--stroke);
+    border-radius:12px;padding:10px 14px;box-shadow:0 10px 26px var(--shadow);font-weight:700;font-size:14px;
+    color:var(--ink);animation:floaty 7s ease-in-out infinite}
+  @media(max-width:780px){.keycap{display:none}}
+
+  /* Marquee */
+  .marquee{margin-top:20px;position:relative;z-index:1;overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+  .marquee .track{display:flex;gap:12px;width:max-content;animation:scrollx 22s linear infinite}
+  .chip{display:inline-flex;align-items:center;gap:8px;padding:9px 16px;border-radius:999px;
+    background:var(--card);border:1px solid var(--stroke);font-weight:600;font-size:14px;color:var(--ink-2);white-space:nowrap}
+  .chip .d{width:8px;height:8px;border-radius:50%;background:var(--accent)}
+  @keyframes scrollx{to{transform:translateX(-50%)}}
 
   /* Sections */
-  section { padding: 46px 0; }
-  h2 { font-size: clamp(26px, 5vw, 36px); font-weight: 780; letter-spacing: -0.01em; text-align: center; }
-  .sub { text-align: center; color: var(--sub); margin: 10px auto 0; max-width: 620px; }
+  section{padding:64px 0;position:relative}
+  .eyebrow{text-align:center;font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent-ink)}
+  h2{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.02em;text-align:center;margin-top:8px}
+  .sub{text-align:center;color:var(--sub);margin:12px auto 0;max-width:620px;font-size:17px}
 
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 30px; }
-  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
-  .feature {
-    background: var(--card); border: 1px solid var(--stroke); border-radius: 16px; padding: 20px;
-  }
-  .feature .ic { font-size: 24px; }
-  .feature h3 { font-size: 17px; margin: 10px 0 5px; }
-  .feature p { font-size: 14.5px; color: var(--sub); }
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px}
+  @media(max-width:860px){.grid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.grid{grid-template-columns:1fr}}
+  .feature{background:var(--card);border:1px solid var(--stroke);border-radius:var(--radius);padding:24px;
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+  .feature:hover{transform:translateY(-4px);box-shadow:0 18px 40px var(--shadow);border-color:color-mix(in srgb,var(--accent) 30%,var(--stroke))}
+  .feature .ic{width:46px;height:46px;border-radius:13px;display:grid;place-items:center;
+    background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 16%,transparent),color-mix(in srgb,var(--accent-2) 16%,transparent))}
+  .feature .ic svg{width:24px;height:24px;color:var(--accent-ink);stroke-width:2}
+  .feature h3{font-size:18px;margin:14px 0 6px}
+  .feature p{font-size:15px;color:var(--sub)}
+  .kbd{background:var(--card-2);border:1px solid var(--stroke);border-radius:7px;padding:1px 7px;font-weight:700;font-size:13px;color:var(--ink)}
 
-  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 30px; counter-reset: s; }
-  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
-  .step { background: var(--bg-soft); border: 1px solid var(--stroke); border-radius: 16px; padding: 20px; }
-  .step::before {
-    counter-increment: s; content: counter(s);
-    display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
-    background: var(--accent); color: #fff; font-weight: 700; font-size: 15px; margin-bottom: 10px;
-  }
-  .step h3 { font-size: 16px; margin-bottom: 4px; }
-  .step p { font-size: 14px; color: var(--sub); }
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;counter-reset:s}
+  @media(max-width:720px){.steps{grid-template-columns:1fr}}
+  .step{background:var(--bg-soft);border:1px solid var(--stroke);border-radius:var(--radius);padding:24px;position:relative}
+  .step::before{counter-increment:s;content:counter(s);display:inline-grid;place-items:center;width:34px;height:34px;
+    border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;font-weight:800;font-size:16px;margin-bottom:12px}
+  .step h3{font-size:17px;margin-bottom:5px}
+  .step p{font-size:15px;color:var(--sub)}
+
+  /* Privacy */
+  .privacy{background:var(--bg-soft);border-top:1px solid var(--stroke);border-bottom:1px solid var(--stroke)}
+  .plist{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:36px}
+  @media(max-width:720px){.plist{grid-template-columns:1fr}}
+  .pitem{display:flex;gap:13px;background:var(--card);border:1px solid var(--stroke);border-radius:14px;padding:18px}
+  .pitem .ic{flex:none;width:40px;height:40px;border-radius:11px;display:grid;place-items:center;
+    background:color-mix(in srgb,var(--accent) 12%,transparent)}
+  .pitem .ic svg{width:21px;height:21px;color:var(--accent-ink)}
+  .pitem h3{font-size:15.5px;margin-bottom:3px}
+  .pitem p{font-size:14px;color:var(--sub)}
 
   /* Download */
-  .download { background: var(--bg-soft); border-top: 1px solid var(--stroke); border-bottom: 1px solid var(--stroke); }
-  .note {
-    max-width: 680px; margin: 26px auto 0; background: var(--card); border: 1px solid var(--stroke);
-    border-radius: 14px; padding: 18px 20px; font-size: 14.5px; color: var(--sub);
-  }
-  .note strong { color: var(--ink); }
-  .note code { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--ink);
-    padding: 1px 6px; border-radius: 6px; font-size: 13px; }
-  .note ol { margin: 8px 0 0 18px; }
-  .note li { margin: 3px 0; }
+  .download .card-dl{max-width:720px;margin:36px auto 0;background:var(--card);border:1px solid var(--stroke);
+    border-radius:22px;padding:30px;text-align:center;box-shadow:0 20px 50px var(--shadow)}
+  .note{max-width:720px;margin:18px auto 0;background:var(--card-2);border:1px solid var(--stroke);border-radius:16px;
+    padding:20px 22px;font-size:15px;color:var(--ink-2);text-align:left}
+  .note strong{color:var(--ink)}
+  .note code{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);padding:1px 7px;border-radius:6px;font-size:13.5px}
+  .note ol{margin:10px 0 0 20px}.note li{margin:5px 0}
+  .note .hd{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--ink);margin-bottom:4px}
+  .note .hd svg{width:18px;height:18px;color:var(--accent-ink)}
 
-  footer { text-align: center; padding: 40px 16px 56px; color: var(--sub); font-size: 13.5px; }
-  footer a { font-weight: 600; }
-  .kbd { background: var(--card-2); border: 1px solid var(--stroke); border-radius: 6px; padding: 1px 7px;
-    font-size: 13px; color: var(--ink); font-weight: 600; }
+  footer{text-align:center;padding:48px 20px 64px;color:var(--sub);font-size:14px}
+  footer a{font-weight:700}
+  footer .heart{color:var(--accent-ink)}
+
+  /* Reveal (JS only; always visible without JS / reduced motion) */
+  .js .reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease}
+  .js .reveal.in{opacity:1;transform:none}
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;scroll-behavior:auto!important}
+    .js .reveal{opacity:1!important;transform:none!important}
+    .btn:hover,.feature:hover{transform:none}
+  }
 </style>
 </head>
 <body>
-  <header class="hero">
-    <img class="mascot" src="mascot.png" alt="unADHD sprout mascot reading a book" />
-    <h1>unADHD</h1>
-    <p class="tag">Hold <em>one</em> intent in a floating card above every app — so you actually finish it before you wander off.</p>
-    <div class="cta">
-      <a class="btn btn-primary" href="https://github.com/medhaveepravin-cpu/unADHD/releases/latest/download/unADHD.zip">↓ Download for macOS</a>
-      <a class="btn btn-ghost" href="https://github.com/medhaveepravin-cpu/unADHD">View source on GitHub</a>
-    </div>
-    <p class="req">macOS 13+ · Apple Silicon · free &amp; open source · 100% on-device</p>
-  </header>
 
-  <div class="mock">
-    <div class="fcard">
-      <img class="m" src="mascot.png" alt="" />
-      <div style="flex:1">
-        <div class="label">CURRENT INTENT <span class="count">· 3 left</span></div>
-        <div class="title">Send the research email to Priya</div>
-        <div class="row">
-          <div class="pill fill">↗ Finish</div>
-          <div class="pill ghost">✓ Done</div>
-        </div>
-      </div>
+<header class="nav" id="nav">
+  <div class="wrap nav-in">
+    <a class="brand" href="#top"><img src="icon.png" alt="" /> unADHD</a>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#how">How it works</a>
+      <a href="#privacy">Privacy</a>
+      <a class="btn btn-primary nav-cta" href="https://github.com/medhaveepravin-cpu/unADHD/releases/latest/download/unADHD.zip">Download</a>
+    </nav>
+  </div>
+</header>
+
+<a id="top"></a>
+<section class="hero">
+  <div class="aurora"><span class="blob b1"></span><span class="blob b2"></span><span class="blob b3"></span></div>
+  <div class="inner wrap">
+    <span class="badge"><span class="dot"></span> Free &amp; open source · 100% on-device</span>
+    <div><img class="mascot" src="mascot.png" alt="unADHD sprout mascot reading a book" /></div>
+    <h1>Hold <span class="grad">one intent.</span><br/>Finish it before you wander off.</h1>
+    <p class="tag">A tiny macOS companion that keeps your current task in a floating card above every app — with one tap to jump back to it.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/medhaveepravin-cpu/unADHD/releases/latest/download/unADHD.zip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 21H3"/></svg>
+        Download for macOS
+      </a>
+      <a class="btn btn-ghost" href="https://github.com/medhaveepravin-cpu/unADHD">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.7c-2.78.6-3.37-1.34-3.37-1.34-.45-1.16-1.1-1.46-1.1-1.46-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.09-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.02a9.5 9.5 0 0 1 5 0c1.91-1.29 2.75-1.02 2.75-1.02.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.74c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg>
+        View on GitHub
+      </a>
+    </div>
+    <p class="req">macOS 13+ · Apple Silicon · no account, no tracking</p>
+    <div class="firstrun">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+      <span>First launch: macOS warns it's unidentified — just <strong>right-click → Open</strong>. <a href="#download">Why?</a></span>
     </div>
   </div>
+</section>
 
-  <section class="wrap">
-    <h2>Built for the wander-off moment</h2>
-    <p class="sub">You open an app to do one thing, get pulled into five others, and forget the first. unADHD keeps that one thing in front of you until it's done.</p>
-    <div class="grid">
-      <div class="feature"><div class="ic">🎯</div><h3>One current focus</h3><p>A floating card shows only the next unchecked intent. Done → the next slides in.</p></div>
-      <div class="feature"><div class="ic">🪟</div><h3>Floats above everything</h3><p>Stays visible over every app, including other apps' fullscreen spaces.</p></div>
-      <div class="feature"><div class="ic">⚡</div><h3>One-tap Finish</h3><p>Jumps you straight to the app or link that intent is about — no hunting.</p></div>
-      <div class="feature"><div class="ic">⌨️</div><h3>Capture from anywhere</h3><p><span class="kbd">⌃⌥⇧U</span> sets an intent without leaving the app you're in.</p></div>
-      <div class="feature"><div class="ic">🔔</div><h3>Gentle nudges</h3><p>Drift off your task for too long and the card pulses to pull you back.</p></div>
-      <div class="feature"><div class="ic">🗂️</div><h3>Brain-dump queue</h3><p>Dump the whole list; check it off one at a time without the overwhelm.</p></div>
+<div class="mock">
+  <div class="keycap">⌃⌥⇧U</div>
+  <div class="fcard">
+    <img class="m" src="mascot.png" alt="" />
+    <div style="flex:1">
+      <div class="label">CURRENT INTENT <span class="count">· 3 left</span></div>
+      <div class="title">Send the research email to Priya</div>
+      <div class="row"><div class="pill fill">↗ Finish</div><div class="pill ghost">✓ Done</div></div>
     </div>
-  </section>
+  </div>
+</div>
 
-  <section class="wrap">
-    <h2>How it works</h2>
-    <div class="steps">
-      <div class="step"><h3>Dump your intents</h3><p>Add what needs doing and where each one lives (an app or a link).</p></div>
-      <div class="step"><h3>Wander freely</h3><p>The card floats along with you, showing just the current one.</p></div>
-      <div class="step"><h3>Finish, then next</h3><p>One tap takes you back to it. Mark it done and the next appears.</p></div>
+<div class="wrap marquee" aria-hidden="true">
+  <div class="track" id="track">
+    <!-- duplicated in JS for seamless loop -->
+    <span class="chip"><span class="d"></span>Chrome</span>
+    <span class="chip"><span class="d"></span>Mail</span>
+    <span class="chip"><span class="d"></span>WhatsApp</span>
+    <span class="chip"><span class="d"></span>Slack</span>
+    <span class="chip"><span class="d"></span>ChatGPT</span>
+    <span class="chip"><span class="d"></span>Claude</span>
+    <span class="chip"><span class="d"></span>Any app or link</span>
+  </div>
+</div>
+
+<section id="features" class="wrap">
+  <p class="eyebrow reveal">Built for the wander-off moment</p>
+  <h2 class="reveal">Everything a distracted brain needs</h2>
+  <p class="sub reveal">You open an app to do one thing, get pulled into five others, and forget the first. unADHD keeps that one thing in front of you until it's done.</p>
+  <div class="grid">
+    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><h3>One current focus</h3><p>A floating card shows only the next unchecked intent. Mark it done and the next slides in.</p></div>
+    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="M3 9h18"/><circle cx="6.5" cy="7" r=".6" fill="currentColor"/><circle cx="8.5" cy="7" r=".6" fill="currentColor"/></svg></div><h3>Floats above everything</h3><p>Stays glanceable over every app — including other apps' fullscreen spaces.</p></div>
+    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div><h3>One-tap Finish</h3><p>Jumps you straight to the app or link that intent is about — no hunting through windows.</p></div>
+    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></div><h3>Capture from anywhere</h3><p><span class="kbd">⌃⌥⇧U</span> sets an intent without leaving the app you're in — and remembers where to send you back.</p></div>
+    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><h3>Gentle nudges</h3><p>Drift off your task for too long and the card pulses to pull you back — never nags.</p></div>
+    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="m18 9 3 3-3 3"/></svg></div><h3>Brain-dump queue</h3><p>Dump the whole list at once; check it off one at a time without the overwhelm.</p></div>
+  </div>
+</section>
+
+<section id="how" class="wrap">
+  <p class="eyebrow reveal">Three steps</p>
+  <h2 class="reveal">How it works</h2>
+  <div class="steps">
+    <div class="step reveal"><h3>Dump your intents</h3><p>Add what needs doing and where each one lives — an app or a link.</p></div>
+    <div class="step reveal"><h3>Wander freely</h3><p>The card floats along with you, showing just the current one.</p></div>
+    <div class="step reveal"><h3>Finish, then next</h3><p>One tap takes you back to it. Mark it done and the next appears.</p></div>
+  </div>
+</section>
+
+<section id="privacy" class="privacy">
+  <div class="wrap">
+    <p class="eyebrow reveal">Private by design</p>
+    <h2 class="reveal">What it can and can't see</h2>
+    <p class="sub reveal">unADHD asks for as little as possible — so no permission prompt should ever look suspicious.</p>
+    <div class="plist">
+      <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><h3>100% on-device</h3><p>No account, no sync, no servers, no analytics — unADHD makes no network calls at all.</p></div></div>
+      <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></div><div><h3>No Accessibility or Automation access</h3><p>It sees which app is frontmost using macOS's standard app-switch notifications — it never reads or controls your other apps.</p></div></div>
+      <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></div><div><h3>The ⌃⌥⇧U shortcut needs no special access</h3><p>It uses a system hotkey API, so there's no Accessibility prompt to approve.</p></div></div>
+      <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><div><h3>Asked only if you opt in</h3><p><strong>Notifications</strong> — only when you turn on nudge notifications. A <strong>Login Item</strong> — only if you enable “Launch at login.” That's it.</p></div></div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <section class="download" id="download">
-    <div class="wrap">
-      <h2>Download</h2>
-      <p class="sub">Free, open source, and fully on-device — no account, no sync, no tracking.</p>
-      <div class="cta">
-        <a class="btn btn-primary" href="https://github.com/medhaveepravin-cpu/unADHD/releases/latest/download/unADHD.zip">↓ Download unADHD.zip</a>
-      </div>
+<section id="download" class="download">
+  <div class="wrap">
+    <p class="eyebrow reveal">Get it</p>
+    <h2 class="reveal">Download unADHD</h2>
+    <p class="sub reveal">Free, open source, and fully on-device.</p>
+    <div class="card-dl reveal">
+      <a class="btn btn-primary" href="https://github.com/medhaveepravin-cpu/unADHD/releases/latest/download/unADHD.zip">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 21H3"/></svg>
+        Download unADHD.zip
+      </a>
       <div class="note">
-        <strong>First launch (one time):</strong> unADHD isn't notarized yet, so macOS will warn that it's from an unidentified developer. To open it:
+        <div class="hd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> First launch (one time)</div>
+        unADHD isn't notarized yet, so macOS will warn that it's from an unidentified developer. That's expected — here's the 10-second fix:
         <ol>
           <li>Unzip <code>unADHD.zip</code> and move <strong>unADHD.app</strong> to your Applications folder.</li>
           <li><strong>Right-click</strong> the app → <strong>Open</strong> → <strong>Open</strong> in the dialog.</li>
-          <li>If macOS still blocks it: System Settings ▸ Privacy &amp; Security ▸ scroll down ▸ <strong>Open Anyway</strong>.</li>
+          <li>Still blocked? <strong>System Settings ▸ Privacy &amp; Security</strong> ▸ scroll down ▸ <strong>Open Anyway</strong>.</li>
         </ol>
         Prefer to build it yourself? <a href="https://github.com/medhaveepravin-cpu/unADHD#build--run">Build from source</a> — it compiles with the Command Line Tools, no Xcode needed.
       </div>
     </div>
-  </section>
+  </div>
+</section>
 
-  <footer>
-    <p>Made with a little sprout. Source code under Apache-2.0 · mascot artwork © its author, all rights reserved.</p>
-    <p style="margin-top:8px"><a href="https://github.com/medhaveepravin-cpu/unADHD">github.com/medhaveepravin-cpu/unADHD</a></p>
-  </footer>
+<footer>
+  <p>Made with a little <span class="heart">🌱</span>. Source code under Apache-2.0 · mascot artwork © its author, all rights reserved.</p>
+  <p style="margin-top:8px"><a href="https://github.com/medhaveepravin-cpu/unADHD">github.com/medhaveepravin-cpu/unADHD</a></p>
+</footer>
+
+<script>
+  // Sticky nav shadow
+  const nav = document.getElementById('nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 8);
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  // Seamless marquee: duplicate chips
+  const track = document.getElementById('track');
+  if (track) track.innerHTML += track.innerHTML;
+
+  // Scroll reveal with stagger
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const els = document.querySelectorAll('.reveal');
+  if (prefersReduced || !('IntersectionObserver' in window)) {
+    els.forEach(e => e.classList.add('in'));
+  } else {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach((en, i) => {
+        if (en.isIntersecting) {
+          const sibs = [...en.target.parentElement.children].filter(c => c.classList.contains('reveal'));
+          const idx = sibs.indexOf(en.target);
+          en.target.style.transitionDelay = Math.max(0, idx) * 60 + 'ms';
+          en.target.classList.add('in');
+          io.unobserve(en.target);
+        }
+      });
+    }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+    els.forEach(e => io.observe(e));
+  }
+</script>
 </body>
 </html>
