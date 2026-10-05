@@ -6,6 +6,10 @@
 
 **A tiny macOS companion that holds *one* intent in a floating card — so you finish it before you wander off.**
 
+### [🌱 Landing page](https://medhaveepravin-cpu.github.io/unADHD/) · [⬇ Download for macOS](https://github.com/medhaveepravin-cpu/unADHD/releases/latest/download/unADHD.zip)
+
+macOS 13+ · Apple Silicon · ad-hoc signed (right-click → Open on first launch)
+
 </div>
 
 ---
