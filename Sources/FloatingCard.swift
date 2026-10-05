@@ -144,7 +144,7 @@ struct FloatingCardView: View {
                 .padding(.trailing, 22)   // keep clear of the ✕ corner
 
                 // Title area: fixed height so the panel size stays stable as intents change.
-                Text(store.current?.title ?? "All clear — nothing queued ✨")
+                Text(store.current?.title ?? "All clear — Una's resting ✨")
                     .font(.system(size: 16, weight: .semibold))
                     .foregroundStyle(store.current == nil ? Theme.subtle : Theme.ink)
                     .lineLimit(2)

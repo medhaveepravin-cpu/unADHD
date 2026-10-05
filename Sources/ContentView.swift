@@ -35,6 +35,9 @@ struct ContentView: View {
                 Text("Dump it all. Finish one at a time.")
                     .font(.callout)
                     .foregroundStyle(Theme.subtle)
+                Text("Una's holding your focus 🌱")
+                    .font(.caption.weight(.medium))
+                    .foregroundStyle(Theme.accent)
             }
             Spacer()
         }
@@ -130,7 +133,7 @@ struct ContentView: View {
             }
 
             if store.intents.isEmpty {
-                Text("Nothing queued yet. Add your first intent above.")
+                Text("Nothing for Una to hold yet. Add your first intent above.")
                     .font(.callout).foregroundStyle(Theme.subtle)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
             } else {

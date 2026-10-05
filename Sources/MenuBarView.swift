@@ -23,7 +23,7 @@ struct MenuBarView: View {
                 Text("CURRENT INTENT")
                     .font(.caption2.weight(.bold)).tracking(0.8)
                     .foregroundStyle(Theme.subtle)
-                Text(store.current?.title ?? "All clear ✨")
+                Text(store.current?.title ?? "All clear — Una's resting ✨")
                     .font(.system(size: 15, weight: .semibold))
                     .foregroundStyle(store.current == nil ? Theme.subtle : Theme.ink)
                     .lineLimit(3)
