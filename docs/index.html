@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>unADHD — hold one intent, finish it</title>
+<meta name="description" content="A tiny macOS companion that keeps one current intent in a floating card above every app — so you finish it before you wander off. Free and open source." />
+<link rel="icon" href="icon.png" />
+<meta property="og:title" content="unADHD" />
+<meta property="og:description" content="Hold one intent. Finish it in a tap. A tiny on-device macOS focus companion." />
+<meta property="og:image" content="icon.png" />
+<style>
+  :root {
+    --bg: #ffffff;
+    --bg-soft: #f4f2fa;
+    --card: #fbfaff;
+    --card-2: #efe9fb;
+    --stroke: #e7dff4;
+    --ink: #2f2548;
+    --sub: #7b6ea6;
+    --accent: #7c5cd8;
+    --accent-muted: #9385d6;
+    --shadow: rgba(124, 92, 216, 0.18);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #141221;
+      --bg-soft: #1b1830;
+      --card: #211d38;
+      --card-2: #2a2447;
+      --stroke: #35305a;
+      --ink: #efe9fb;
+      --sub: #a99cd6;
+      --accent: #a78bff;
+      --accent-muted: #8f78e6;
+      --shadow: rgba(0, 0, 0, 0.5);
+    }
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; padding: 0 16px; }
+  a { color: var(--accent); }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 72px 16px 40px;
+    background: radial-gradient(1200px 500px at 50% -10%, var(--bg-soft), var(--bg));
+  }
+  .hero img.mascot { width: 160px; height: auto; filter: drop-shadow(0 12px 28px var(--shadow)); }
+  .hero h1 { font-size: clamp(38px, 8vw, 68px); font-weight: 800; letter-spacing: -0.02em; margin-top: 10px; }
+  .hero .tag { font-size: clamp(17px, 3.5vw, 22px); color: var(--sub); margin: 12px auto 0; max-width: 620px; }
+  .cta { margin-top: 30px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 9px;
+    padding: 14px 26px; border-radius: 999px; font-size: 16px; font-weight: 650;
+    text-decoration: none; border: 1px solid transparent; transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 10px 24px var(--shadow); }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 14px 30px var(--shadow); }
+  .btn-ghost { background: transparent; color: var(--accent); border-color: var(--stroke); }
+  .btn-ghost:hover { background: var(--card-2); }
+  .req { margin-top: 16px; font-size: 13px; color: var(--sub); }
+
+  /* Floating-card mock */
+  .mock { display: flex; justify-content: center; padding: 20px 16px 10px; }
+  .fcard {
+    width: 360px; max-width: 100%;
+    background: linear-gradient(to bottom, var(--card), var(--card-2));
+    border: 1px solid var(--stroke); border-radius: 22px;
+    padding: 16px; display: flex; gap: 14px; align-items: flex-start;
+    box-shadow: 0 18px 44px var(--shadow);
+  }
+  .fcard .m { width: 84px; height: auto; flex: none; }
+  .fcard .label { font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--sub); }
+  .fcard .count { color: var(--accent); font-weight: 700; }
+  .fcard .title { font-size: 16px; font-weight: 650; margin: 8px 0 12px; }
+  .fcard .row { display: flex; gap: 8px; }
+  .pill { flex: 1; text-align: center; font-size: 13px; font-weight: 650; padding: 8px 0; border-radius: 999px; }
+  .pill.fill { background: var(--accent-muted); color: #fff; }
+  .pill.ghost { background: color-mix(in srgb, var(--accent) 8%, transparent); color: var(--accent); }
+
+  /* Sections */
+  section { padding: 46px 0; }
+  h2 { font-size: clamp(26px, 5vw, 36px); font-weight: 780; letter-spacing: -0.01em; text-align: center; }
+  .sub { text-align: center; color: var(--sub); margin: 10px auto 0; max-width: 620px; }
+
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 30px; }
+  @media (max-width: 760px) { .grid { grid-template-columns: 1fr; } }
+  .feature {
+    background: var(--card); border: 1px solid var(--stroke); border-radius: 16px; padding: 20px;
+  }
+  .feature .ic { font-size: 24px; }
+  .feature h3 { font-size: 17px; margin: 10px 0 5px; }
+  .feature p { font-size: 14.5px; color: var(--sub); }
+
+  .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 30px; counter-reset: s; }
+  @media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
+  .step { background: var(--bg-soft); border: 1px solid var(--stroke); border-radius: 16px; padding: 20px; }
+  .step::before {
+    counter-increment: s; content: counter(s);
+    display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%;
+    background: var(--accent); color: #fff; font-weight: 700; font-size: 15px; margin-bottom: 10px;
+  }
+  .step h3 { font-size: 16px; margin-bottom: 4px; }
+  .step p { font-size: 14px; color: var(--sub); }
+
+  /* Download */
+  .download { background: var(--bg-soft); border-top: 1px solid var(--stroke); border-bottom: 1px solid var(--stroke); }
+  .note {
+    max-width: 680px; margin: 26px auto 0; background: var(--card); border: 1px solid var(--stroke);
+    border-radius: 14px; padding: 18px 20px; font-size: 14.5px; color: var(--sub);
+  }
+  .note strong { color: var(--ink); }
+  .note code { background: color-mix(in srgb, var(--accent) 10%, transparent); color: var(--ink);
+    padding: 1px 6px; border-radius: 6px; font-size: 13px; }
+  .note ol { margin: 8px 0 0 18px; }
+  .note li { margin: 3px 0; }
+
+  footer { text-align: center; padding: 40px 16px 56px; color: var(--sub); font-size: 13.5px; }
+  footer a { font-weight: 600; }
+  .kbd { background: var(--card-2); border: 1px solid var(--stroke); border-radius: 6px; padding: 1px 7px;
+    font-size: 13px; color: var(--ink); font-weight: 600; }
+</style>
+</head>
+<body>
+  <header class="hero">
+    <img class="mascot" src="mascot.png" alt="unADHD sprout mascot reading a book" />
+    <h1>unADHD</h1>
+    <p class="tag">Hold <em>one</em> intent in a floating card above every app — so you actually finish it before you wander off.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="https://github.com/medhaveepravin-cpu/unADHD/releases/latest/download/unADHD.zip">↓ Download for macOS</a>
+      <a class="btn btn-ghost" href="https://github.com/medhaveepravin-cpu/unADHD">View source on GitHub</a>
+    </div>
+    <p class="req">macOS 13+ · Apple Silicon · free &amp; open source · 100% on-device</p>
+  </header>
+
+  <div class="mock">
+    <div class="fcard">
+      <img class="m" src="mascot.png" alt="" />
+      <div style="flex:1">
+        <div class="label">CURRENT INTENT <span class="count">· 3 left</span></div>
+        <div class="title">Send the research email to Priya</div>
+        <div class="row">
+          <div class="pill fill">↗ Finish</div>
+          <div class="pill ghost">✓ Done</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <section class="wrap">
+    <h2>Built for the wander-off moment</h2>
+    <p class="sub">You open an app to do one thing, get pulled into five others, and forget the first. unADHD keeps that one thing in front of you until it's done.</p>
+    <div class="grid">
+      <div class="feature"><div class="ic">🎯</div><h3>One current focus</h3><p>A floating card shows only the next unchecked intent. Done → the next slides in.</p></div>
+      <div class="feature"><div class="ic">🪟</div><h3>Floats above everything</h3><p>Stays visible over every app, including other apps' fullscreen spaces.</p></div>
+      <div class="feature"><div class="ic">⚡</div><h3>One-tap Finish</h3><p>Jumps you straight to the app or link that intent is about — no hunting.</p></div>
+      <div class="feature"><div class="ic">⌨️</div><h3>Capture from anywhere</h3><p><span class="kbd">⌃⌥⇧U</span> sets an intent without leaving the app you're in.</p></div>
+      <div class="feature"><div class="ic">🔔</div><h3>Gentle nudges</h3><p>Drift off your task for too long and the card pulses to pull you back.</p></div>
+      <div class="feature"><div class="ic">🗂️</div><h3>Brain-dump queue</h3><p>Dump the whole list; check it off one at a time without the overwhelm.</p></div>
+    </div>
+  </section>
+
+  <section class="wrap">
+    <h2>How it works</h2>
+    <div class="steps">
+      <div class="step"><h3>Dump your intents</h3><p>Add what needs doing and where each one lives (an app or a link).</p></div>
+      <div class="step"><h3>Wander freely</h3><p>The card floats along with you, showing just the current one.</p></div>
+      <div class="step"><h3>Finish, then next</h3><p>One tap takes you back to it. Mark it done and the next appears.</p></div>
+    </div>
+  </section>
+
+  <section class="download" id="download">
+    <div class="wrap">
+      <h2>Download</h2>
+      <p class="sub">Free, open source, and fully on-device — no account, no sync, no tracking.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="https://github.com/medhaveepravin-cpu/unADHD/releases/latest/download/unADHD.zip">↓ Download unADHD.zip</a>
+      </div>
+      <div class="note">
+        <strong>First launch (one time):</strong> unADHD isn't notarized yet, so macOS will warn that it's from an unidentified developer. To open it:
+        <ol>
+          <li>Unzip <code>unADHD.zip</code> and move <strong>unADHD.app</strong> to your Applications folder.</li>
+          <li><strong>Right-click</strong> the app → <strong>Open</strong> → <strong>Open</strong> in the dialog.</li>
+          <li>If macOS still blocks it: System Settings ▸ Privacy &amp; Security ▸ scroll down ▸ <strong>Open Anyway</strong>.</li>
+        </ol>
+        Prefer to build it yourself? <a href="https://github.com/medhaveepravin-cpu/unADHD#build--run">Build from source</a> — it compiles with the Command Line Tools, no Xcode needed.
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Made with a little sprout. Source code under Apache-2.0 · mascot artwork © its author, all rights reserved.</p>
+    <p style="margin-top:8px"><a href="https://github.com/medhaveepravin-cpu/unADHD">github.com/medhaveepravin-cpu/unADHD</a></p>
+  </footer>
+</body>
+</html>
