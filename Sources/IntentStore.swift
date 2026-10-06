@@ -191,7 +191,9 @@ final class IntentStore: ObservableObject {
         static let intents = "intents.v2", presets = "presets.v1"
         static let auto = "autoCapture", card = "showFloatingCard"
         static let nudge = "nudgesEnabled", notify = "nudgeNotify"
-        static let onboarded = "hasOnboarded.v1"
+        // Bumped to v2 in 0.6.1 so everyone updating sees the redesigned tour
+        // (new screens, the destination menu, and dragging the floating card) once.
+        static let onboarded = "hasOnboarded.v2"
     }
 
     init() { load() }
