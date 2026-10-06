@@ -76,6 +76,7 @@ struct FloatingCardView: View {
     var body: some View {
         ZStack(alignment: .topTrailing) {
             cardBody
+
             // ✕ sits in the very top-right corner, clear of the "N left" count.
             Button { store.showFloatingCard = false } label: {
                 Image(systemName: "xmark")
@@ -94,8 +95,8 @@ struct FloatingCardView: View {
         // Idle dimming: fades when you're not looking, blooms on hover or nudge.
         .opacity(hovering || nudged ? 1.0 : 0.6)
         .scaleEffect(bump ? 1.06 : 1.0)
-        .animation(.easeInOut(duration: 0.25), value: hovering)
-        .animation(.easeInOut(duration: 0.25), value: nudged)
+        .animation(Theme.Motion.gentle, value: hovering)
+        .animation(Theme.Motion.gentle, value: nudged)
         .onHover { hovering = $0 }
         .onChange(of: store.pulseTick) { _ in pulse() }
         .contextMenu {
@@ -124,19 +125,32 @@ struct FloatingCardView: View {
     }
 
     private var cardBody: some View {
+        VStack(spacing: 10) {
+            // Drag handle: press and drag here to move the card anywhere on screen,
+            // so it never blocks what you're working on.
+            ZStack {
+                WindowDragArea()
+                Capsule()
+                    .fill(Theme.subtle.opacity(hovering ? 0.55 : 0.3))
+                    .frame(width: 40, height: 5)
+            }
+            .frame(width: 170, height: 14)
+            .contentShape(Rectangle())
+            .help("Drag to move the card")
+
         HStack(alignment: .top, spacing: 14) {
-            MascotView(size: 104)
+            HiMascotView(width: 112)
                 .padding(.top, 2)
 
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 6) {
                     Text("CURRENT INTENT")
-                        .font(.caption2.weight(.bold))
-                        .tracking(0.8)
+                        .font(Theme.Typo.eyebrow)
+                        .tracking(1.4)
                         .foregroundStyle(Theme.subtle)
                     if store.remainingCount > 1 {
                         Text("· \(store.remainingCount) left")
-                            .font(.caption2.weight(.semibold))
+                            .font(Theme.Typo.eyebrow)
                             .foregroundStyle(Theme.accent)
                     }
                     Spacer()
@@ -145,7 +159,7 @@ struct FloatingCardView: View {
 
                 // Title area: fixed height so the panel size stays stable as intents change.
                 Text(store.current?.title ?? "All clear — Una's resting ✨")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(Theme.Typo.headline)
                     .foregroundStyle(store.current == nil ? Theme.subtle : Theme.ink)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)
@@ -168,17 +182,23 @@ struct FloatingCardView: View {
                 }
             }
         }
-        .padding(16)
+        }
+        .padding(Theme.Space.lg)
         .frame(width: 372)
         .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
+            RoundedRectangle(cornerRadius: Theme.Radius.xl, style: .continuous)
                 .fill(LinearGradient(colors: [Theme.cardTop, Theme.cardBottom],
                                      startPoint: .top, endPoint: .bottom))
+                // Inset highlight along the top edge — reads like light catching a
+                // physical plate (§4A inner-core highlight).
                 .overlay(
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .stroke(Theme.cardStroke, lineWidth: 1)
+                    RoundedRectangle(cornerRadius: Theme.Radius.xl, style: .continuous)
+                        .stroke(
+                            LinearGradient(colors: [.white.opacity(0.6), Theme.cardStroke],
+                                           startPoint: .top, endPoint: .bottom),
+                            lineWidth: 1)
                 )
-                .shadow(color: Theme.accent.opacity(0.22), radius: 18, x: 0, y: 8)
+                .softShadow(.card)
         )
     }
 }
@@ -188,13 +208,37 @@ struct CapsuleButton: ButtonStyle {
     var filled: Bool
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .font(.system(size: 13, weight: .semibold))
-            .padding(.vertical, 8)
+            .font(Theme.Typo.callout)
+            .padding(.vertical, Theme.Space.sm)
             .foregroundStyle(filled ? Color.white : Theme.accent)
             .background(
                 Capsule().fill(filled ? Theme.accentMuted : Theme.accent.opacity(0.08))
             )
-            .opacity(configuration.isPressed ? 0.75 : 1)
+            // Physical press: dip + shrink slightly, settling on a spring (§5B).
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .opacity(configuration.isPressed ? 0.85 : 1)
+            .softShadow(filled ? Theme.Shadow(color: Theme.accent.opacity(0.22),
+                                              radius: 8, y: 3)
+                               : Theme.Shadow(color: .clear, radius: 0, y: 0))
+            .animation(Theme.Motion.snappy, value: configuration.isPressed)
             .contentShape(Capsule())
+    }
+}
+
+// A transparent AppKit view that drags its window when you press-drag on it —
+// reliable even for a borderless floating panel, where SwiftUI gestures can't
+// move the window directly.
+struct WindowDragArea: NSViewRepresentable {
+    func makeNSView(context: Context) -> NSView { DragView() }
+    func updateNSView(_ nsView: NSView, context: Context) {}
+
+    final class DragView: NSView {
+        override func mouseDown(with event: NSEvent) {
+            window?.performDrag(with: event)
+        }
+        // Show the grab cursor over the handle so it reads as draggable.
+        override func resetCursorRects() {
+            addCursorRect(bounds, cursor: .openHand)
+        }
     }
 }

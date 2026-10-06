@@ -42,7 +42,9 @@ final class IntentStore: ObservableObject {
     @Published var draftTarget: String = "Mail"
 
     @Published var autoCapture: Bool = true       { didSet { save() } }
-    @Published var showFloatingCard: Bool = false { didSet { save() } }
+    // On by default — the always-visible card is the core focus aid. Someone who
+    // finds it distracting can switch it off in Settings (that choice persists).
+    @Published var showFloatingCard: Bool = true  { didSet { save() } }
 
     // Nudges (M5)
     @Published var nudgesEnabled: Bool = true { didSet { save() } }

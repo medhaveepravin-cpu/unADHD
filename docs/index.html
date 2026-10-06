@@ -192,6 +192,94 @@
   .shot{max-width:470px;margin:44px auto 0}
   .shot img{width:100%;height:auto;filter:drop-shadow(0 34px 64px var(--shadow-strong))}
 
+  /* ===== Interactive gamified demo ===== */
+  .demo{max-width:560px;margin:44px auto 0}
+  .demo-win{background:var(--card);border:1px solid var(--stroke);border-radius:24px;overflow:hidden;
+    box-shadow:0 34px 80px var(--shadow-strong)}
+  .demo-bar{display:flex;align-items:center;gap:7px;padding:12px 15px;background:var(--bg-soft);
+    border-bottom:1px solid var(--stroke);position:relative}
+  .demo-bar .ttl{position:absolute;inset:0;display:grid;place-items:center;font-weight:700;font-size:13px;color:var(--ink-2)}
+  .xp{display:flex;align-items:center;gap:12px;padding:13px 18px;border-bottom:1px solid var(--stroke);
+    background:linear-gradient(135deg,color-mix(in srgb,var(--accent) 10%,transparent),transparent)}
+  .xp .lvl{display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:12.5px;color:var(--accent-ink);
+    background:var(--card);border:1px solid var(--stroke);border-radius:999px;padding:5px 11px;white-space:nowrap}
+  .xp .barwrap{flex:1}
+  .xp .bar{height:10px;border-radius:999px;background:var(--card-2);overflow:hidden;border:1px solid var(--stroke)}
+  .xp .fill{height:100%;width:0;border-radius:999px;background:linear-gradient(90deg,var(--accent),var(--accent-2));
+    transition:width .6s cubic-bezier(.32,.72,0,1)}
+  .xp .streak{display:inline-flex;align-items:center;gap:5px;font-weight:800;font-size:12.5px;color:var(--ink-2);white-space:nowrap}
+  .demo-body{position:relative;padding:26px 24px 22px;min-height:348px;overflow:hidden}
+  .panel{display:none;flex-direction:column;align-items:center;text-align:center;gap:10px}
+  .panel.on{display:flex;animation:panelIn .42s cubic-bezier(.32,.72,0,1)}
+  @keyframes panelIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .d-eyebrow{display:flex;align-items:center;gap:7px;font-weight:800;font-size:11px;letter-spacing:.11em;
+    text-transform:uppercase;color:var(--accent-ink)}
+  .d-eyebrow .bar2{width:16px;height:3px;border-radius:999px;background:var(--accent)}
+  .d-mascot{width:130px;height:auto;filter:drop-shadow(0 14px 26px var(--shadow));animation:bob 5s ease-in-out infinite}
+  .d-cheer{font-weight:800;font-size:15px;color:var(--accent-ink);min-height:20px}
+  .d-title{font-size:23px;font-weight:800;letter-spacing:-.01em;
+    background:linear-gradient(120deg,var(--ink),var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .d-target{font-size:13.5px;color:var(--sub);display:flex;align-items:center;gap:6px}
+  .d-target svg{width:14px;height:14px}
+  .d-actions{display:flex;flex-direction:column;gap:10px;width:100%;max-width:330px;margin-top:4px}
+  .d-btn{border:0;cursor:pointer;border-radius:999px;padding:13px;font-weight:700;font-size:15px;font-family:inherit;
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .18s ease,box-shadow .18s ease}
+  .d-btn svg{width:17px;height:17px}
+  .d-btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent-2));color:#fff;box-shadow:0 10px 24px var(--shadow)}
+  .d-btn.ghost{background:color-mix(in srgb,var(--accent) 9%,transparent);color:var(--accent-ink)}
+  .d-btn:hover{transform:translateY(-2px)}
+  .d-btn:active{transform:scale(.98)}
+  .qlist{width:100%;display:flex;flex-direction:column;gap:9px}
+  .qrow{display:flex;align-items:center;gap:12px;text-align:left;background:var(--bg-soft);border:1px solid var(--stroke);
+    border-radius:14px;padding:11px 13px}
+  .qrow.cur{background:var(--card-2);border-color:color-mix(in srgb,var(--accent) 34%,var(--stroke));box-shadow:0 8px 20px var(--shadow)}
+  .qcheck{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--sub);background:none;cursor:pointer;
+    display:grid;place-items:center;transition:all .2s ease}
+  .qcheck svg{width:13px;height:13px;color:#fff;opacity:0;transition:opacity .2s ease}
+  .qcheck:hover{border-color:var(--accent)}
+  .qrow.done .qcheck{background:var(--accent);border-color:var(--accent)}
+  .qrow.done .qcheck svg{opacity:1}
+  .qrow.done .qtitle{text-decoration:line-through;color:var(--sub)}
+  .qmeta{display:flex;flex-direction:column;gap:1px;min-width:0}
+  .qtitle{font-weight:600;font-size:14px;color:var(--ink)}
+  .qtarget{font-size:12px;color:var(--sub)}
+  .qnow{margin-left:auto;font-size:10px;font-weight:800;letter-spacing:.04em;color:#fff;background:var(--accent-2);
+    border-radius:999px;padding:3px 9px;flex:none}
+  .d-field{width:100%;max-width:360px;display:flex;gap:9px}
+  .d-field input{flex:1;font-family:inherit;font-size:14px;color:var(--ink);background:var(--card);
+    border:1px solid var(--stroke);border-radius:12px;padding:12px 14px;outline:none;transition:border-color .2s ease}
+  .d-field input:focus{border-color:var(--accent)}
+  .d-chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;max-width:360px}
+  .d-chip{font-size:12px;font-weight:700;color:var(--accent-ink);background:color-mix(in srgb,var(--accent) 8%,transparent);
+    border:1px solid transparent;border-radius:999px;padding:7px 13px;cursor:pointer;font-family:inherit;transition:all .18s ease}
+  .d-chip:hover{background:color-mix(in srgb,var(--accent) 15%,transparent)}
+  .d-chip.sel{background:var(--accent);color:#fff}
+  .d-setrow{width:100%;max-width:380px;display:flex;align-items:center;gap:12px;background:var(--bg-soft);
+    border:1px solid var(--stroke);border-radius:14px;padding:13px 15px;text-align:left}
+  .d-setrow .lbl{font-weight:600;font-size:14px;color:var(--ink)}
+  .d-switch{margin-left:auto;flex:none;width:42px;height:25px;border-radius:999px;background:var(--accent);
+    border:0;cursor:pointer;position:relative;transition:background .2s ease}
+  .d-switch::after{content:"";position:absolute;top:2.5px;right:2.5px;width:20px;height:20px;border-radius:50%;
+    background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:all .2s ease}
+  .d-switch[aria-checked="false"]{background:var(--stroke)}
+  .d-switch[aria-checked="false"]::after{right:auto;left:2.5px}
+  .demo-tabs{display:flex;border-top:1px solid var(--stroke);background:var(--bg-soft)}
+  .demo-tabs button{flex:1;background:none;border:0;cursor:pointer;font-family:inherit;color:var(--sub);
+    font-weight:700;font-size:11px;padding:8px 4px 11px;display:flex;flex-direction:column;align-items:center;gap:3px}
+  .demo-tabs button svg{width:19px;height:19px}
+  .demo-tabs button.active{color:var(--accent-ink)}
+  .demo-tabs button .nub{width:30px;height:4px;border-radius:999px;background:transparent}
+  .demo-tabs button.active .nub{background:var(--accent)}
+  .confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:5}
+  .confetti i{position:absolute;top:-14px;width:9px;height:9px;border-radius:2px;opacity:.95;animation:fall 1.15s ease-in forwards}
+  @keyframes fall{to{transform:translateY(390px) rotate(540deg);opacity:0}}
+  .levelup{position:absolute;left:50%;top:42%;transform:translate(-50%,-50%) scale(.6);opacity:0;z-index:6;
+    font-weight:800;font-size:21px;color:var(--accent-ink);background:var(--card);border:1px solid var(--stroke);
+    border-radius:16px;padding:12px 20px;box-shadow:0 18px 40px var(--shadow-strong);pointer-events:none;white-space:nowrap}
+  .levelup.show{animation:pop 1.4s ease forwards}
+  @keyframes pop{14%{opacity:1;transform:translate(-50%,-50%) scale(1.06)}82%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-58%) scale(1)}}
+  .demo-hint{text-align:center;font-size:13px;color:var(--sub);margin-top:16px}
+
   /* Privacy */
   .privacy{background:var(--bg-soft);border-top:1px solid var(--stroke);border-bottom:1px solid var(--stroke)}
   .plist{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:36px}
@@ -236,6 +324,7 @@
     <nav class="nav-links">
       <a href="#features">Features</a>
       <a href="#how">How it works</a>
+      <a href="#try">Play</a>
       <a href="#privacy">Privacy</a>
       <button class="theme-toggle" id="themeToggle" type="button" aria-label="Toggle dark mode" title="Toggle theme">
         <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
@@ -325,6 +414,81 @@
     <div class="step reveal"><h3>Dump your intents</h3><p>Add what needs doing and where each one lives — an app or a link.</p></div>
     <div class="step reveal"><h3>Wander freely</h3><p>The card floats along with you, showing just the current one.</p></div>
     <div class="step reveal"><h3>Finish, then next</h3><p>One tap takes you back to it. Mark it done and the next appears.</p></div>
+  </div>
+</section>
+
+<section id="try" class="wrap">
+  <p class="eyebrow reveal">Play the focus loop</p>
+  <h2 class="reveal">Finish one — watch Una cheer</h2>
+  <p class="sub reveal">This is the real redesigned app. Tap through the tabs, check things off, and every finish grows your streak and levels up your sprout.</p>
+
+  <div class="demo reveal" id="demo">
+    <div class="demo-win">
+      <div class="demo-bar"><span class="bdot r"></span><span class="bdot y"></span><span class="bdot g"></span><span class="ttl">unADHD</span></div>
+
+      <div class="xp">
+        <span class="lvl">🌱 Lv <b id="lvl">1</b></span>
+        <div class="barwrap"><div class="bar"><div class="fill" id="xpfill"></div></div></div>
+        <span class="streak">🔥 <b id="streak">0</b> done</span>
+      </div>
+
+      <div class="demo-body">
+        <div class="confetti" id="confetti"></div>
+        <div class="levelup" id="levelup">Level up! 🌿</div>
+
+        <!-- Focus -->
+        <div class="panel on" id="p-focus">
+          <div class="d-eyebrow"><span class="bar2"></span> One thing at a time</div>
+          <img class="d-mascot" src="mascot_hi.png" alt="Una waving hello" />
+          <div class="d-cheer" id="cheer">You've got this 🌱</div>
+          <div class="d-eyebrow">Current intent · <span id="leftcount">4</span> left</div>
+          <div class="d-title" id="curtitle">Reply to Priya's email</div>
+          <div class="d-target"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg> Opens <span id="curtarget">Mail</span> when you finish</div>
+          <div class="d-actions">
+            <button class="d-btn primary" id="finishBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17 17 7M8 7h9v9"/></svg> Finish &amp; open</button>
+            <button class="d-btn ghost" id="doneBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg> Mark done</button>
+          </div>
+        </div>
+
+        <!-- Queue -->
+        <div class="panel" id="p-queue">
+          <div class="d-eyebrow"><span class="bar2"></span> My queue</div>
+          <div class="qlist" id="qlist"></div>
+        </div>
+
+        <!-- Add -->
+        <div class="panel" id="p-add">
+          <div class="d-eyebrow"><span class="bar2"></span> Add an intent</div>
+          <img class="d-mascot" src="mascot.png" alt="Una reading" style="width:104px" />
+          <div class="d-field"><input id="addInput" type="text" placeholder="e.g. Book the dentist" aria-label="New intent" /></div>
+          <div class="d-chips" id="addChips">
+            <button class="d-chip sel" data-g="Mail">Mail</button>
+            <button class="d-chip" data-g="Chrome">Chrome</button>
+            <button class="d-chip" data-g="WhatsApp">WhatsApp</button>
+            <button class="d-chip" data-g="Slack">Slack</button>
+            <button class="d-chip" data-g="ChatGPT">ChatGPT</button>
+          </div>
+          <div class="d-actions"><button class="d-btn primary" id="addBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg> Add to queue</button></div>
+        </div>
+
+        <!-- Settings -->
+        <div class="panel" id="p-settings">
+          <div class="d-eyebrow"><span class="bar2"></span> Settings</div>
+          <img class="d-mascot" src="mascot.png" alt="Una reading" style="width:92px" />
+          <div class="d-setrow"><span class="lbl">Show floating card</span><button class="d-switch" role="switch" aria-checked="true" aria-label="Show floating card"></button></div>
+          <div class="d-setrow"><span class="lbl">Nudge me off-task</span><button class="d-switch" role="switch" aria-checked="true" aria-label="Nudge me off-task"></button></div>
+          <div class="d-setrow"><span class="lbl">Launch at login</span><button class="d-switch" role="switch" aria-checked="false" aria-label="Launch at login"></button></div>
+        </div>
+      </div>
+
+      <div class="demo-tabs" id="demoTabs">
+        <button data-tab="focus" class="active" aria-label="Focus"><span class="nub"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>Focus</button>
+        <button data-tab="queue" aria-label="Queue"><span class="nub"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1.3"/><circle cx="4.5" cy="12" r="1.3"/><circle cx="4.5" cy="18" r="1.3"/></svg>Queue</button>
+        <button data-tab="add" aria-label="Add"><span class="nub"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>Add</button>
+        <button data-tab="settings" aria-label="Settings"><span class="nub"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.2A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.2A1.6 1.6 0 0 0 4.6 7a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 2.7 1.1 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V7a1.6 1.6 0 0 0 1.5 1H23a2 2 0 1 1 0 4h-.2a1.6 1.6 0 0 0-1.4 1Z" transform="scale(0.78) translate(3.3 3.3)"/></svg>Settings</button>
+      </div>
+    </div>
+    <p class="demo-hint">A playable mock-up — everything you tap stays right here on this page.</p>
   </div>
 </section>
 
@@ -425,6 +589,148 @@
     }, {threshold:0.12, rootMargin:'0px 0px -8% 0px'});
     els.forEach(e => io.observe(e));
   }
+
+  /* ===== Gamified interactive demo ===== */
+  (function(){
+    const demo = document.getElementById('demo');
+    if (!demo) return;
+
+    const intents = [
+      {t:"Reply to Priya's email", g:"Mail",     done:false},
+      {t:"Book the dentist",       g:"Safari",   done:false},
+      {t:"Send the invoice",       g:"Numbers",  done:false},
+      {t:"Text the group",         g:"WhatsApp", done:false},
+    ];
+    const cheers = ["You've got this 🌱","One step at a time.","Nice momentum!",
+                    "Una's proud of you 🌿","Small steps still count.","On a roll! 🔥"];
+    const confettiColors = ["#7c5cd8","#9b7ff0","#b9a5f0","#ffc7ec","#a7d8ff","#9ad7b8"];
+    const PER_LEVEL = 4;
+    let streak = 0, level = 1;
+
+    const $ = id => document.getElementById(id);
+    const curtitle=$('curtitle'), curtarget=$('curtarget'), leftcount=$('leftcount'),
+          cheerEl=$('cheer'), lvlEl=$('lvl'), streakEl=$('streak'), xpfill=$('xpfill'),
+          qlist=$('qlist'), finishBtn=$('finishBtn'), doneBtn=$('doneBtn');
+
+    const current = () => intents.find(i => !i.done);
+    const remaining = () => intents.filter(i => !i.done).length;
+
+    function renderFocus(){
+      const c = current();
+      if (c){
+        curtitle.textContent = c.t;
+        curtarget.textContent = c.g;
+        curtitle.previousElementSibling.style.display = '';
+        finishBtn.disabled = doneBtn.disabled = false;
+        finishBtn.style.opacity = doneBtn.style.opacity = 1;
+      } else {
+        curtitle.textContent = "All clear — Una's resting ✨";
+        curtitle.previousElementSibling.style.display = 'none';
+        document.querySelector('#p-focus .d-target').style.visibility = 'hidden';
+        finishBtn.disabled = doneBtn.disabled = true;
+        finishBtn.style.opacity = doneBtn.style.opacity = .5;
+      }
+      leftcount.textContent = remaining();
+      if (current()) document.querySelector('#p-focus .d-target').style.visibility = 'visible';
+    }
+
+    function renderQueue(){
+      const cur = current();
+      qlist.innerHTML = '';
+      intents.forEach(it => {
+        const row = document.createElement('div');
+        row.className = 'qrow' + (it.done ? ' done' : (it === cur ? ' cur' : ''));
+        row.innerHTML =
+          '<button class="qcheck" aria-label="Toggle done"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg></button>'
+        + '<div class="qmeta"><span class="qtitle">'+it.t+'</span><span class="qtarget">→ '+it.g+'</span></div>'
+        + (it === cur ? '<span class="qnow">NOW</span>' : '');
+        row.querySelector('.qcheck').addEventListener('click', () => {
+          if (!it.done){ it.done = true; reward(); } else { it.done = false; }
+          renderAll();
+        });
+        qlist.appendChild(row);
+      });
+    }
+
+    function renderXP(){
+      lvlEl.textContent = level;
+      streakEl.textContent = streak;
+      xpfill.style.width = ((streak % PER_LEVEL) / PER_LEVEL * 100) + '%';
+    }
+    function renderAll(){ renderFocus(); renderQueue(); renderXP(); }
+
+    function burstConfetti(){
+      const box = $('confetti');
+      for (let i=0;i<18;i++){
+        const s = document.createElement('i');
+        s.style.left = Math.random()*100 + '%';
+        s.style.background = confettiColors[i % confettiColors.length];
+        s.style.animationDelay = (Math.random()*0.15) + 's';
+        s.style.transform = 'rotate('+(Math.random()*90)+'deg)';
+        box.appendChild(s);
+        setTimeout(() => s.remove(), 1400);
+      }
+    }
+    function levelUp(){
+      level++;
+      const el = $('levelup');
+      el.textContent = 'Level ' + level + '! 🌿';
+      el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+    }
+
+    // A finish/done "reward": bump streak, cheer, confetti, maybe level up.
+    function reward(){
+      streak++;
+      cheerEl.textContent = cheers[streak % cheers.length];
+      burstConfetti();
+      if (streak % PER_LEVEL === 0) levelUp();
+    }
+
+    function completeCurrent(){
+      const c = current();
+      if (!c) return;
+      c.done = true;
+      reward();
+      renderAll();
+    }
+    finishBtn.addEventListener('click', completeCurrent);
+    doneBtn.addEventListener('click', completeCurrent);
+
+    // Tabs
+    document.getElementById('demoTabs').addEventListener('click', e => {
+      const b = e.target.closest('button'); if (!b) return;
+      const tab = b.dataset.tab;
+      document.querySelectorAll('#demoTabs button').forEach(x => x.classList.toggle('active', x === b));
+      document.querySelectorAll('.demo-body .panel').forEach(p => p.classList.remove('on'));
+      document.getElementById('p-' + tab).classList.add('on');
+    });
+
+    // Add tab
+    let addTarget = 'Mail';
+    document.getElementById('addChips').addEventListener('click', e => {
+      const c = e.target.closest('.d-chip'); if (!c) return;
+      document.querySelectorAll('#addChips .d-chip').forEach(x => x.classList.toggle('sel', x === c));
+      addTarget = c.dataset.g;
+    });
+    const addInput = $('addInput');
+    function addIntent(){
+      const t = addInput.value.trim(); if (!t) return;
+      intents.push({t, g:addTarget, done:false});
+      addInput.value = '';
+      renderAll();
+      // hop to Focus so they see it land
+      document.querySelector('#demoTabs button[data-tab="focus"]').click();
+    }
+    document.getElementById('addBtn').addEventListener('click', addIntent);
+    addInput.addEventListener('keydown', e => { if (e.key === 'Enter') addIntent(); });
+
+    // Settings toggles (visual)
+    document.querySelectorAll('#p-settings .d-switch').forEach(sw => {
+      sw.addEventListener('click', () => sw.setAttribute('aria-checked', sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true'));
+    });
+
+    renderAll();
+  })();
 </script>
 </body>
 </html>

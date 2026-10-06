@@ -29,8 +29,8 @@ private let slides: [Slide] = [
     Slide(symbol: "plus.circle.fill",
           title: "Add an intent",
           steps: [
-            "Type the task in **What needs doing?**",
-            "Under **When I finish, take me to**, pick where you'll land.",
+            "Type the task in **What needs doing?** — or tap 🎙️ to speak it.",
+            "Pick where you'll land. Tap **Change** to open the full menu — any app, a URL, or auto-capture.",
             "Press **+** — it drops into your queue.",
           ],
           numbered: true),
@@ -51,6 +51,15 @@ private let slides: [Slide] = [
           steps: [
             "Switch to an app, come back — it becomes your **take me to**.",
             "Turn it off to choose the target by hand.",
+          ]),
+
+    Slide(symbol: "macwindow",
+          title: "The floating card",
+          intro: "Una keeps your current intent on top of every app:",
+          steps: [
+            "It shows just the one thing to finish next.",
+            "**Drag the handle at the top** to move the card anywhere it's in your way.",
+            "**Finish** jumps to its app; **Done** checks it off.",
           ]),
 
     Slide(symbol: "checklist",
