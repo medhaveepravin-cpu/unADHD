@@ -10,3 +10,8 @@ unADHD.app/
 
 # Release artifact (produced for GitHub releases)
 unADHD.zip
+
+# Installed agent skills (personal tooling, not part of the app)
+.agents/
+.claude/
+skills-lock.json
