@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import Speech
 import AVFoundation
 
@@ -87,5 +88,68 @@ final class SpeechDictator: ObservableObject {
         request = nil
         task = nil
         isListening = false
+    }
+}
+
+// Reusable round mic button that dictates on-device speech into a text binding.
+// Pulses red while listening; turns orange if access is refused.
+struct DictationMic: View {
+    @Binding var text: String
+    var size: CGFloat = 46
+
+    @StateObject private var dictator = SpeechDictator()
+    @State private var base = ""      // text already present before dictation began
+    @State private var pulse = false
+
+    var body: some View {
+        Button {
+            if dictator.isListening { dictator.stop() }
+            else { base = text; dictator.toggle() }
+        } label: {
+            ZStack {
+                Circle()
+                    .fill(fill)
+                    .frame(width: size, height: size)
+                    .scaleEffect(pulse ? 1.12 : 1.0)
+                Image(systemName: symbol)
+                    .font(.system(size: size * 0.37, weight: .semibold))
+                    .foregroundStyle(tint)
+            }
+        }
+        .buttonStyle(.plain)
+        .help(helpText)
+        .onChange(of: dictator.transcript) { t in
+            let b = base.trimmingCharacters(in: .whitespacesAndNewlines)
+            text = b.isEmpty ? t : (t.isEmpty ? b : "\(b) \(t)")
+        }
+        .onChange(of: dictator.isListening) { on in
+            if on {
+                withAnimation(.easeInOut(duration: 0.7).repeatForever(autoreverses: true)) { pulse = true }
+            } else {
+                withAnimation(.easeOut(duration: 0.2)) { pulse = false }
+            }
+        }
+        .onDisappear { dictator.stop() }
+    }
+
+    private var fill: Color {
+        if dictator.isListening { return .red.opacity(0.14) }
+        if dictator.denied { return .orange.opacity(0.14) }
+        return Theme.accent.opacity(0.10)
+    }
+    private var symbol: String {
+        if dictator.isListening { return "stop.fill" }
+        if dictator.denied { return "mic.slash.fill" }
+        return "mic.fill"
+    }
+    private var tint: Color {
+        if dictator.isListening { return .red }
+        if dictator.denied { return .orange }
+        return Theme.accent
+    }
+    private var helpText: String {
+        if dictator.isListening { return "Stop dictation" }
+        if dictator.denied { return "Allow Microphone & Speech Recognition in System Settings ▸ Privacy" }
+        return "Dictate your intent (on-device)"
     }
 }

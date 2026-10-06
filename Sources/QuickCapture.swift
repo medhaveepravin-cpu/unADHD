@@ -72,9 +72,6 @@ struct QuickCaptureView: View {
 
     @State private var text = ""
     @FocusState private var focused: Bool
-    @StateObject private var dictator = SpeechDictator()
-    @State private var dictationBase = ""   // text typed before dictation started
-    @State private var pulse = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -92,49 +89,28 @@ struct QuickCaptureView: View {
                     .font(.system(size: 17, weight: .medium))
                     .foregroundStyle(Theme.ink)
                     .focused($focused)
-                    .onSubmit { commit() }
+                    .onSubmit { onCommit(text) }
                     .padding(12)
                     .frame(maxWidth: .infinity)
                     .background(RoundedRectangle(cornerRadius: 10).fill(.white.opacity(0.9)))
 
-                micButton
+                DictationMic(text: $text)
             }
 
             HStack(spacing: 6) {
-                if dictator.isListening {
-                    Circle().fill(.red).frame(width: 7, height: 7)
-                    Text("Listening — tap the mic to stop")
-                        .font(.caption).foregroundStyle(Theme.ink)
-                } else if dictator.denied {
-                    Image(systemName: "exclamationmark.triangle.fill")
-                        .font(.caption2).foregroundStyle(.orange)
-                    Text("Allow Microphone & Speech Recognition in Privacy settings")
-                        .font(.caption).foregroundStyle(Theme.subtle)
-                } else if !capturedApp.isEmpty {
+                if !capturedApp.isEmpty {
                     Label("Finish will take you back to \(capturedApp)", systemImage: "arrow.uturn.backward")
                         .font(.caption).foregroundStyle(Theme.subtle)
                 }
                 Spacer()
-                Button("Cancel") { dictator.stop(); onCancel() }
+                Button("Cancel", action: onCancel)
                     .buttonStyle(.plain).font(.caption).foregroundStyle(Theme.subtle)
                     .keyboardShortcut(.cancelAction)
-                Button("Add") { commit() }
+                Button("Add") { onCommit(text) }
                     .buttonStyle(CapsuleButton(filled: true))
                     .keyboardShortcut(.defaultAction)
             }
         }
-        .onChange(of: dictator.transcript) { t in
-            let base = dictationBase.trimmingCharacters(in: .whitespacesAndNewlines)
-            text = base.isEmpty ? t : (t.isEmpty ? base : "\(base) \(t)")
-        }
-        .onChange(of: dictator.isListening) { on in
-            if on {
-                withAnimation(.easeInOut(duration: 0.7).repeatForever(autoreverses: true)) { pulse = true }
-            } else {
-                withAnimation(.easeOut(duration: 0.2)) { pulse = false }
-            }
-        }
-        .onDisappear { dictator.stop() }
         .padding(18)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
@@ -146,35 +122,5 @@ struct QuickCaptureView: View {
         )
         .padding(12)
         .onAppear { DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { focused = true } }
-    }
-
-    // Tap to dictate on-device; tap again to stop. Pulses while listening.
-    private var micButton: some View {
-        Button {
-            if dictator.isListening {
-                dictator.stop()
-            } else {
-                dictationBase = text
-                dictator.toggle()
-            }
-        } label: {
-            ZStack {
-                Circle()
-                    .fill(dictator.isListening ? Color.red.opacity(0.14) : Theme.accent.opacity(0.10))
-                    .frame(width: 46, height: 46)
-                    .scaleEffect(pulse ? 1.12 : 1.0)
-                Image(systemName: dictator.isListening ? "stop.fill" : "mic.fill")
-                    .font(.system(size: 17, weight: .semibold))
-                    .foregroundStyle(dictator.isListening ? .red : Theme.accent)
-            }
-        }
-        .buttonStyle(.plain)
-        .help(dictator.isListening ? "Stop dictation" : "Dictate your intent (on-device)")
-    }
-
-    // Stop any dictation, then hand the text off.
-    private func commit() {
-        dictator.stop()
-        onCommit(text)
     }
 }

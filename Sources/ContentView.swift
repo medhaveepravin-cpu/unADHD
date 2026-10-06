@@ -72,6 +72,7 @@ struct ContentView: View {
                         .padding(10)
                         .background(RoundedRectangle(cornerRadius: 10).fill(.white.opacity(0.8)))
                         .onSubmit { store.add() }
+                    DictationMic(text: $store.draftTitle, size: 38)
                     Button { store.add() } label: {
                         Image(systemName: "plus").font(.system(size: 14, weight: .bold))
                             .padding(10)
