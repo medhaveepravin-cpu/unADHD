@@ -24,6 +24,8 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
   <key>NSPrincipalClass</key><string>NSApplication</string>
   <key>NSHighResolutionCapable</key><true/>
   <key>LSApplicationCategoryType</key><string>public.app-category.productivity</string>
+  <key>NSMicrophoneUsageDescription</key><string>unADHD listens only while you hold the mic button, to turn your spoken intent into text. Audio is processed on your Mac.</string>
+  <key>NSSpeechRecognitionUsageDescription</key><string>Speech recognition runs on-device to transcribe the intent you dictate — nothing is sent to Apple.</string>
 </dict>
 </plist>
 PLIST
@@ -37,6 +39,7 @@ xcrun --sdk macosx swiftc -parse-as-library -O \
   -o "$APP/Contents/MacOS/unADHD" \
   "$DIR/Sources/Theme.swift" \
   "$DIR/Sources/Onboarding.swift" \
+  "$DIR/Sources/Speech.swift" \
   "$DIR/Sources/LoginItem.swift" \
   "$DIR/Sources/HotKeyManager.swift" \
   "$DIR/Sources/QuickCapture.swift" \

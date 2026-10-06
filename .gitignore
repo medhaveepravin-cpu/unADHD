@@ -7,3 +7,6 @@ unADHD.app/
 # Editor/OS cruft
 *.swp
 *~
+
+# Release artifact (produced for GitHub releases)
+unADHD.zip
