@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>unADHD — hold one intent, finish it</title>
-<meta name="description" content="A tiny macOS companion that keeps one current intent in a floating card above every app — so you finish it before you wander off. Free, open source, 100% on-device." />
+<title>unADHD: hold one intent, finish it</title>
+<meta name="description" content="A tiny macOS companion that keeps one current intent in a floating card above every app, so you finish it before you wander off. Free, open source, 100% on-device." />
 <link rel="icon" href="icon.png" />
 <meta property="og:title" content="unADHD" />
 <meta property="og:description" content="Hold one intent. Finish it in a tap. A tiny on-device macOS focus companion." />
@@ -161,7 +161,7 @@
 
   /* Sections */
   section{padding:104px 0 76px;position:relative}
-  /* .wrap sets padding:0 20px which would wipe section vertical padding — restore it */
+  /* .wrap sets padding:0 20px which would wipe section vertical padding, restore it */
   section.wrap{padding-top:104px;padding-bottom:76px}
   .eyebrow{text-align:center;font-size:13px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--accent-ink)}
   h2{font-size:clamp(28px,5vw,40px);font-weight:800;letter-spacing:-.02em;text-align:center;margin-top:8px}
@@ -302,6 +302,46 @@
   .note .hd{display:flex;align-items:center;gap:9px;font-weight:700;color:var(--ink);margin-bottom:4px}
   .note .hd svg{width:18px;height:18px;color:var(--accent-ink)}
 
+  /* Download: calm, scannable setup */
+  .dl-hero{max-width:560px;margin:34px auto 0;text-align:center}
+  .dl-hero .btn{font-size:16px;padding:16px 32px}
+  .dl-hero .req{margin-top:14px}
+  .setup{max-width:860px;margin:48px auto 0}
+  .setup-title{text-align:center;font-weight:700;font-size:19px;color:var(--ink)}
+  .setup-note{text-align:center;color:var(--sub);font-size:14.5px;margin:7px auto 0;max-width:460px}
+  .setup-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:30px}
+  @media(max-width:720px){.setup-steps{grid-template-columns:1fr}}
+  .scard{background:var(--card);border:1px solid var(--stroke);border-radius:16px;padding:22px;
+    transition:transform .2s ease,box-shadow .2s ease,border-color .2s ease}
+  .scard:hover{transform:translateY(-3px);box-shadow:0 16px 36px var(--shadow);
+    border-color:color-mix(in srgb,var(--accent) 30%,var(--stroke))}
+  .scard .num{width:30px;height:30px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    color:#fff;font-weight:800;font-size:14px;display:grid;place-items:center;box-shadow:0 6px 14px var(--shadow)}
+  .scard h3{font-size:16px;margin:14px 0 5px}
+  .scard p{font-size:14px;color:var(--sub)}
+  .cmd{display:flex;align-items:center;gap:8px;margin-top:12px;background:var(--bg-soft);border:1px solid var(--stroke);
+    border-radius:10px;padding:7px 8px 7px 11px}
+  .cmd code{flex:1;min-width:0;overflow-x:auto;white-space:nowrap;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
+    font-size:12px;color:var(--ink);scrollbar-width:none}
+  .cmd code::-webkit-scrollbar{display:none}
+  .cmd button{flex:none;border:1px solid var(--stroke);background:var(--card);color:var(--accent-ink);
+    border-radius:7px;padding:5px 10px;font-size:11.5px;font-weight:700;cursor:pointer;font-family:inherit;
+    transition:background .15s ease}
+  .cmd button:hover{background:var(--card-2)}
+  .why{max-width:720px;margin:26px auto 0;background:var(--card-2);border:1px solid var(--stroke);border-radius:14px;padding:0 20px}
+  .why summary{cursor:pointer;list-style:none;padding:16px 0;font-weight:700;font-size:15px;color:var(--ink);
+    display:flex;align-items:center;gap:10px}
+  .why summary::-webkit-details-marker{display:none}
+  .why summary svg{width:17px;height:17px;color:var(--accent-ink);flex:none}
+  .why summary .chev{margin-left:auto;transition:transform .25s ease;color:var(--sub)}
+  .why[open] summary .chev{transform:rotate(180deg)}
+  .why-body{padding:0 0 18px;font-size:14.5px;color:var(--ink-2);line-height:1.65}
+  .why-body p{margin-top:10px}
+  .why-body p:first-child{margin-top:0}
+  .why-body code{background:color-mix(in srgb,var(--accent) 12%,transparent);color:var(--ink);padding:1px 7px;border-radius:6px;font-size:13px}
+  .why-body strong{color:var(--ink)}
+  .build-link{text-align:center;color:var(--sub);font-size:14px;margin-top:28px}
+
   footer{text-align:center;padding:48px 20px 64px;color:var(--sub);font-size:14px}
   footer a{font-weight:700}
   footer .heart{color:var(--accent-ink)}
@@ -343,7 +383,7 @@
     <div><img class="mascot" src="mascot.png" alt="Una, the unADHD sprout mascot, reading a book" /></div>
     <div><span class="mascot-name">meet <b>Una</b>, your focus sprout</span></div>
     <h1>Hold <span class="grad">one intent.</span><br/>Finish it before you wander off.</h1>
-    <p class="tag">A tiny macOS companion that keeps your current task in a floating card above every app — with one tap to jump back to it.</p>
+    <p class="tag">A tiny macOS companion that keeps your current task in a floating card above every app, with one tap to jump back to it.</p>
     <div class="cta">
       <a class="btn btn-primary" href="#download">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 21H3"/></svg>
@@ -355,10 +395,6 @@
       </a>
     </div>
     <p class="req">macOS 13+ · Apple Silicon · no account, no tracking</p>
-    <div class="firstrun">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
-      <span>First launch: macOS warns it's unidentified — one Terminal command clears it. <a href="#download">How &amp; why</a></span>
-    </div>
   </div>
 </section>
 
@@ -366,7 +402,7 @@
   <div class="scene">
     <div class="browser" aria-hidden="true">
       <div class="bbar"><span class="bdot r"></span><span class="bdot y"></span><span class="bdot g"></span>
-        <span class="addr">research — your current tab</span></div>
+        <span class="addr">research · current tab</span></div>
       <div class="bbody">
         <span class="ln h"></span>
         <span class="ln w90"></span><span class="ln w80"></span><span class="ln w95"></span>
@@ -399,10 +435,10 @@
   <p class="sub reveal">You open an app to do one thing, get pulled into five others, and forget the first. unADHD keeps that one thing in front of you until it's done.</p>
   <div class="grid">
     <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div><h3>One current focus</h3><p>A floating card shows only the next unchecked intent. Mark it done and the next slides in.</p></div>
-    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="M3 9h18"/><circle cx="6.5" cy="7" r=".6" fill="currentColor"/><circle cx="8.5" cy="7" r=".6" fill="currentColor"/></svg></div><h3>Floats above everything</h3><p>Stays glanceable over every app — including other apps' fullscreen spaces.</p></div>
-    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div><h3>One-tap Finish</h3><p>Jumps you straight to the app or link that intent is about — no hunting through windows.</p></div>
-    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></div><h3>Capture from anywhere</h3><p><span class="kbd">⌃⌥⇧U</span> sets an intent without leaving the app you're in — and remembers where to send you back.</p></div>
-    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><h3>Gentle nudges</h3><p>Drift off your task for too long and the card pulses to pull you back — never nags.</p></div>
+    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="14" x="3" y="5" rx="2"/><path d="M3 9h18"/><circle cx="6.5" cy="7" r=".6" fill="currentColor"/><circle cx="8.5" cy="7" r=".6" fill="currentColor"/></svg></div><h3>Floats above everything</h3><p>Stays glanceable over every app, including other apps' fullscreen spaces.</p></div>
+    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/></svg></div><h3>One-tap Finish</h3><p>Jumps you straight to the app or link that intent is about, with no hunting through windows.</p></div>
+    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></div><h3>Capture from anywhere</h3><p><span class="kbd">⌃⌥⇧U</span> sets an intent without leaving the app you're in, and remembers where to send you back.</p></div>
+    <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><h3>Gentle nudges</h3><p>Drift off your task for too long and the card pulses to pull you back. It never nags.</p></div>
     <div class="feature reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M11 12H3"/><path d="M16 6H3"/><path d="M16 18H3"/><path d="m18 9 3 3-3 3"/></svg></div><h3>Brain-dump queue</h3><p>Dump the whole list at once; check it off one at a time without the overwhelm.</p></div>
   </div>
 </section>
@@ -411,7 +447,7 @@
   <p class="eyebrow reveal">Three steps</p>
   <h2 class="reveal">How it works</h2>
   <div class="steps">
-    <div class="step reveal"><h3>Dump your intents</h3><p>Add what needs doing and where each one lives — an app or a link.</p></div>
+    <div class="step reveal"><h3>Dump your intents</h3><p>Add what needs doing and where each one lives: an app or a link.</p></div>
     <div class="step reveal"><h3>Wander freely</h3><p>The card floats along with you, showing just the current one.</p></div>
     <div class="step reveal"><h3>Finish, then next</h3><p>One tap takes you back to it. Mark it done and the next appears.</p></div>
   </div>
@@ -419,7 +455,7 @@
 
 <section id="try" class="wrap">
   <p class="eyebrow reveal">Play the focus loop</p>
-  <h2 class="reveal">Finish one — watch Una cheer</h2>
+  <h2 class="reveal">Finish one, watch Una cheer</h2>
   <p class="sub reveal">This is the real redesigned app. Tap through the tabs, check things off, and every finish grows your streak and levels up your sprout.</p>
 
   <div class="demo reveal" id="demo">
@@ -488,7 +524,7 @@
         <button data-tab="settings" aria-label="Settings"><span class="nub"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.2A1.6 1.6 0 0 0 7 19.4a1.6 1.6 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.6 1.6 0 0 0-1.1-2.7H1a2 2 0 1 1 0-4h.2A1.6 1.6 0 0 0 4.6 7a1.6 1.6 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.6 1.6 0 0 0 1.8.3H9a1.6 1.6 0 0 0 1-1.5V1a2 2 0 1 1 4 0v.2a1.6 1.6 0 0 0 2.7 1.1 1.6 1.6 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0-.3 1.8V7a1.6 1.6 0 0 0 1.5 1H23a2 2 0 1 1 0 4h-.2a1.6 1.6 0 0 0-1.4 1Z" transform="scale(0.78) translate(3.3 3.3)"/></svg>Settings</button>
       </div>
     </div>
-    <p class="demo-hint">A playable mock-up — everything you tap stays right here on this page.</p>
+    <p class="demo-hint">A playable mock-up. Everything you tap stays on this page.</p>
   </div>
 </section>
 
@@ -505,12 +541,12 @@
   <div class="wrap">
     <p class="eyebrow reveal">Private by design</p>
     <h2 class="reveal">What it can and can't see</h2>
-    <p class="sub reveal">unADHD asks for as little as possible — so no permission prompt should ever look suspicious.</p>
+    <p class="sub reveal">unADHD asks for as little as possible, so no permission prompt should ever look suspicious.</p>
     <div class="plist">
-      <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><h3>100% on-device</h3><p>No account, no sync, no servers, no analytics — unADHD makes no network calls at all.</p></div></div>
-      <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></div><div><h3>No Accessibility or Automation access</h3><p>It sees which app is frontmost using macOS's standard app-switch notifications — it never reads or controls your other apps.</p></div></div>
+      <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div><div><h3>100% on-device</h3><p>No account, no sync, no servers, no analytics. unADHD makes no network calls at all.</p></div></div>
+      <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg></div><div><h3>No Accessibility or Automation access</h3><p>It sees which app is frontmost using macOS's standard app-switch notifications. It never reads or controls your other apps.</p></div></div>
       <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/></svg></div><div><h3>The ⌃⌥⇧U shortcut needs no special access</h3><p>It uses a system hotkey API, so there's no Accessibility prompt to approve.</p></div></div>
-      <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><div><h3>Asked only if you opt in</h3><p><strong>Notifications</strong> — only when you turn on nudge notifications. A <strong>Login Item</strong> — only if you enable “Launch at login.” That's it.</p></div></div>
+      <div class="pitem reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg></div><div><h3>Asked only if you opt in</h3><p><strong>Notifications</strong>, only when you turn on nudge notifications. A <strong>Login Item</strong>, only if you enable “Launch at login.” That's it.</p></div></div>
     </div>
   </div>
 </section>
@@ -520,24 +556,54 @@
     <p class="eyebrow reveal">Get it</p>
     <h2 class="reveal">Download unADHD</h2>
     <p class="sub reveal">Free, open source, and fully on-device.</p>
-    <div class="card-dl reveal">
-      <div class="note">
-        <div class="hd"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg> Read this first — first launch (one time)</div>
-        unADHD isn't notarized yet, so macOS will warn that it's from an unidentified developer and may say it "cannot verify it's free of malware." That's expected for an unsigned open-source app — here's the fix:
-        <ol>
-          <li>Unzip <code>unADHD.zip</code> and move <strong>unADHD.app</strong> to your Applications folder.</li>
-          <li>Open <strong>Terminal</strong> and run this — it clears the "downloaded from the internet" flag on just this app, then double-click to open:
-            <br><code>xattr -dr com.apple.quarantine /Applications/unADHD.app</code></li>
-          <li>Prefer no Terminal? Double-click the app, dismiss the warning, then go to <strong>System Settings ▸ Privacy &amp; Security</strong> ▸ scroll down ▸ <strong>Open Anyway</strong>.</li>
-        </ol>
-        <p style="margin:10px 0 0;font-size:.92em;opacity:.8">Only run that command on apps you downloaded from a source you trust (like this page). It doesn't disable any system protection — it just skips the check for this one file. On macOS 15+ the old right-click → Open shortcut no longer works.</p>
-        Prefer to build it yourself? <a href="https://github.com/medhaveepravin-cpu/unADHD#build--run">Build from source</a> — it compiles with the Command Line Tools, no Xcode needed.
-      </div>
-      <a class="btn btn-primary" href="https://github.com/medhaveepravin-cpu/unADHD/releases/latest/download/unADHD.zip" style="margin-top:22px">
+    <div class="dl-hero reveal">
+      <a class="btn btn-primary" href="https://github.com/medhaveepravin-cpu/unADHD/releases/latest/download/unADHD.zip">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3"/><path d="m7 10 5 5 5-5"/><path d="M21 21H3"/></svg>
-        Download unADHD.zip
+        Download for macOS
       </a>
+      <p class="req">macOS 13+ · Apple Silicon · about 2 MB</p>
     </div>
+
+    <div class="setup reveal">
+      <p class="setup-title">First launch takes one extra step</p>
+      <p class="setup-note">unADHD is open source and unsigned, so macOS needs a quick OK the first time.</p>
+      <div class="setup-steps">
+        <div class="scard">
+          <span class="num">1</span>
+          <h3>Move it in</h3>
+          <p>Unzip, then drag <strong>unADHD</strong> into your Applications folder.</p>
+        </div>
+        <div class="scard">
+          <span class="num">2</span>
+          <h3>Clear the flag</h3>
+          <p>Paste this in Terminal once:</p>
+          <div class="cmd">
+            <code id="xattrCmd">xattr -dr com.apple.quarantine /Applications/unADHD.app</code>
+            <button type="button" id="copyCmd">Copy</button>
+          </div>
+        </div>
+        <div class="scard">
+          <span class="num">3</span>
+          <h3>Open it</h3>
+          <p>Double-click unADHD. Una settles into your menu bar. 🌱</p>
+        </div>
+      </div>
+
+      <details class="why">
+        <summary>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+          Why the extra step, and no-Terminal option
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </summary>
+        <div class="why-body">
+          <p>unADHD isn't notarized by Apple yet, so macOS flags it as "downloaded from the internet" and warns it's from an unidentified developer. Normal for an unsigned open-source app.</p>
+          <p>The <code>xattr</code> command clears that flag for this one app only. It disables no system protection. Run it only on apps from a source you trust, like this page.</p>
+          <p><strong>Prefer no Terminal?</strong> Double-click unADHD, dismiss the warning, then open <strong>System Settings ▸ Privacy &amp; Security</strong>, scroll down, and click <strong>Open Anyway</strong>.</p>
+        </div>
+      </details>
+    </div>
+
+    <p class="build-link reveal">Rather build it yourself? <a href="https://github.com/medhaveepravin-cpu/unADHD#build--run">Build from source</a>. It compiles with the Command Line Tools, no Xcode needed.</p>
   </div>
 </section>
 
@@ -569,6 +635,24 @@
   // Seamless marquee: duplicate chips
   const track = document.getElementById('track');
   if (track) track.innerHTML += track.innerHTML;
+
+  // Copy the quarantine command (clipboard API, with a legacy fallback)
+  const copyBtn = document.getElementById('copyCmd');
+  if (copyBtn) copyBtn.addEventListener('click', () => {
+    const cmd = document.getElementById('xattrCmd').textContent;
+    const ok = () => { copyBtn.textContent = 'Copied'; setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1600); };
+    const legacy = () => {
+      try {
+        const ta = document.createElement('textarea');
+        ta.value = cmd; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); ta.remove(); ok();
+      } catch (e) { copyBtn.textContent = 'Press ⌘C'; }
+    };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(cmd).then(ok).catch(legacy);
+    } else { legacy(); }
+  });
 
   // Scroll reveal with stagger
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -624,7 +708,7 @@
         finishBtn.disabled = doneBtn.disabled = false;
         finishBtn.style.opacity = doneBtn.style.opacity = 1;
       } else {
-        curtitle.textContent = "All clear — Una's resting ✨";
+        curtitle.textContent = "All clear. Una's resting ✨";
         curtitle.previousElementSibling.style.display = 'none';
         document.querySelector('#p-focus .d-target').style.visibility = 'hidden';
         finishBtn.disabled = doneBtn.disabled = true;
