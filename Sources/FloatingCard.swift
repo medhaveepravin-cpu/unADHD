@@ -189,6 +189,10 @@ struct FloatingCardView: View {
             RoundedRectangle(cornerRadius: Theme.Radius.xl, style: .continuous)
                 .fill(LinearGradient(colors: [Theme.cardTop, Theme.cardBottom],
                                      startPoint: .top, endPoint: .bottom))
+                // The whole card surface drags the window. Interactive controls
+                // (Finish/Done, ✕) sit in front and capture their own clicks, so
+                // you can grab the card almost anywhere to reposition it.
+                .overlay(WindowDragArea())
                 // Inset highlight along the top edge — reads like light catching a
                 // physical plate (§4A inner-core highlight).
                 .overlay(
